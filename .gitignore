@@ -1,6 +1,5 @@
 .gitignore
 *.swp
-pywikibot
 svn
 *pyc
 data
