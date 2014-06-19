@@ -1,4 +1,2 @@
-geogebra-wiki-translation-helper
-================================
-
-Tools for generating useful reports when translating the GeoGebra manual on MediaWiki
+# GeoGebra Wiki translation helper
+This code will help in the translation work of the wiki by generating useful reports.
