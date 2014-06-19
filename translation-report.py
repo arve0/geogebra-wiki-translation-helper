@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*
 
 import sys
 from wikipages import WikiPages
 from geogebracommands import Commands
 
-if sys.version_info[0] != 3:
-    print('This program is written for python3.')
+if sys.version_info[0] != 2:
+    print('This program is written for python2, as pywikibot uses python2.')
     sys.exit()
 
 class Bunch:

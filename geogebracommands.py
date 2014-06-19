@@ -1,5 +1,6 @@
-from urllib.request import urlopen
+from urllib import urlopen
 import json
+import codecs
 
 class Commands:
     """ Class for commands """
@@ -30,7 +31,7 @@ class Commands:
         """ Convert the raw data to a list of dictionaries """
         if self.languageCode != 'en':
             # raw data does not include names that are the same in english
-            self.loadFromJson('commands-en.json')
+            self.loadFromJson('data/commands-en.json')
         else: self.commands = {}
         lines = self.rawData.split('\n')
         for line in lines:
@@ -65,8 +66,8 @@ class Commands:
             'languageCode': self.languageCode,
             'commands': self.commands,
         }
-        f = open(self.filename, 'w')
-        jsonStr = json.dumps(object, ensure_ascii=False) # use utf-8 encoding(instead of escaped ascii), to make json files easy to read for humans
+        f = codecs.open(self.filename, 'w', encoding='utf8')
+        jsonStr = json.dumps(object, ensure_ascii=False, encoding='utf8') # use utf-8 encoding(instead of escaped ascii), to make json files easy to read for humans
         f.write(jsonStr)
         f.close()
 
@@ -76,7 +77,7 @@ class Commands:
         if not filename:
             filename = self.filename
         print('Loading file ' + filename)
-        f = open(filename)
+        f = codecs.open(filename, encoding='utf8')
         object = json.load(f)
         f.close()
         self.commands = object['commands']

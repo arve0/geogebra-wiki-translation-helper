@@ -1,7 +1,8 @@
 import json
-from urllib.request import urlopen
-from urllib.parse import urlencode
+from urllib import urlopen
+from urllib import urlencode
 from time import sleep
+import codecs
 
 
 class WikiPages:
@@ -84,7 +85,7 @@ class WikiPages:
             'languageCode': self.languageCode,
             'pages': self.pages,
         }
-        f = open(self.filename, 'w')
+        f = codecs.open(self.filename, 'w', encoding='utf8')
         f.write(json.dumps(object))
         f.close()
 
@@ -92,7 +93,7 @@ class WikiPages:
     def loadFromJson(self):
         """ Loads data from json file. """
         print('Loading file ' + self.filename)
-        f = open(self.filename)
+        f = codecs.open(self.filename, encoding='utf8')
         object = json.load(f)
         f.close()
         self.pages = object['pages']
