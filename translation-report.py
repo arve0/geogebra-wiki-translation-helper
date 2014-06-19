@@ -1,9 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*
 
 import sys
 from wikipages import WikiPages
 from geogebracommands import Commands
+
+if sys.version_info[0] != 3:
+    print('This program is written for python3.')
+    sys.exit()
 
 class Bunch:
     # http://code.activestate.com/recipes/52308-the-simple-but-handy-collector-of-a-bunch-of-named/
@@ -89,7 +93,7 @@ def analyzeMissingPages():
                 if command in page['title']:
                     i += 1
                     cmd.append(page['title'])
-        print i
+        print(i)
     print('')
 
 

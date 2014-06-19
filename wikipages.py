@@ -1,5 +1,6 @@
 import json
-import urllib
+from urllib.request import urlopen
+from urllib.parse import urlencode
 from time import sleep
 
 
@@ -13,7 +14,7 @@ class WikiPages:
     def __init__(self, language=None, languageCode=None):
         self.language = language or 'English'
         self.languageCode = languageCode or 'en'
-        self.filename = 'wikipages-%s.json' % (self.languageCode,)
+        self.filename = 'data/wikipages-%s.json' % (self.languageCode,)
 
 
     def getApiUrl(self):
@@ -22,7 +23,7 @@ class WikiPages:
 
 
     def getAllPagesUrl(self, startLetter):
-        params = urllib.urlencode({
+        params = urlencode({
             'action': 'query',
             'list': 'allpages',
             'apfrom': startLetter,
@@ -42,7 +43,7 @@ class WikiPages:
         while 'query-continue' in query.keys():
             s = query['query-continue']['allpages']['apcontinue']
             url = self.getAllPagesUrl(startLetter=s)
-            response = urllib.urlopen(url).read()
+            response = urlopen(url).read()
             sleep(1) # being nice to the webserver
             query = json.loads(response)
             pages.extend(query['query']['allpages'])
@@ -53,14 +54,14 @@ class WikiPages:
 
 #    def loadLanguageLinksFromWiki(self, titles=['Main Page']):
 #        """ Load language links from wiki. """
-#        params = urllib.urlencode({
+#        params = urlencode({
 #            'action': 'query',
 #            'prop': 'langlinks',
 #            'lllimit': 500,
 #            'titles': '|'.join(titles),
 #            'format': 'json',
 #        })
-#        response = urllib.urlopen(url, params).read()
+#        response = urlopen(url, params).read()
 #        sleep(1)
 #        query = json.loads(response)['query']
 #        pages = query['pages']

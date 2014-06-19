@@ -1,4 +1,4 @@
-import urllib
+from urllib.request import urlopen
 import json
 
 class Commands:
@@ -9,7 +9,7 @@ class Commands:
     def __init__(self, language=None, languageCode=None):
         self.language = language or 'English'
         self.languageCode = languageCode or 'en'
-        self.filename = 'commands-%s.json' % (self.languageCode,)
+        self.filename = 'data/commands-%s.json' % (self.languageCode,)
 
         # Infix codes
         if self.languageCode == 'nb':
@@ -32,26 +32,28 @@ class Commands:
             # raw data does not include names that are the same in english
             self.loadFromJson('commands-en.json')
         else: self.commands = {}
-        translation = ''
         lines = self.rawData.split('\n')
         for line in lines:
+            translation = ''
             words = line.split('=')
             if '.Syntax' not in words[0]:
                 translation = words[1]
             else:
                 command = words[0].split('.')[0]
-                self.commands.update({
-                    command: {
+                if translation == '':
+                    obj = { command: { 'syntax': words[1] } } # translation == english
+                else:
+                    obj = { command: {
                         'translation': translation,
                         'syntax': words[1]
-                    }
-                })
+                    }}
+                self.commands.update(obj)
 
 
     def loadFromSvn(self):
         """ Load commands from SVN, convert raw data and store them to self.commands """
         print('Fetching from SVN...')
-        self.rawData = urllib.urlopen(self.getApiUrl()).read().decode('ISO-8859-1')
+        self.rawData = urlopen(self.getApiUrl()).read().decode('ISO-8859-1')
         self.convertRawDataToDictionary()
       
 
@@ -64,7 +66,8 @@ class Commands:
             'commands': self.commands,
         }
         f = open(self.filename, 'w')
-        f.write(json.dumps(object))
+        jsonStr = json.dumps(object, ensure_ascii=False) # use utf-8 encoding(instead of escaped ascii), to make json files easy to read for humans
+        f.write(jsonStr)
         f.close()
 
 
