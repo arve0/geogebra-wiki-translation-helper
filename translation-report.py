@@ -4,30 +4,19 @@
 import sys
 from wikipages import WikiPages
 from geogebracommands import Commands
+import config
 
 if sys.version_info[0] != 2:
     print('This program is written for python2, as pywikibot uses python2.')
     sys.exit()
 
-class Bunch:
-    # http://code.activestate.com/recipes/52308-the-simple-but-handy-collector-of-a-bunch-of-named/
-    # save typing, instead of dictionaries
-    def __init__(self, **kwds):
-        self.__dict__.update(kwds)
-
-# global variables
-languages = [
-    Bunch(name='English',code='en'),
-    Bunch(name='Norsk bokmål', code='nb'),
-    Bunch(name='Norsk nynorsk', code='nn'),
-]
 pagesDict = {}
 commandsDict = {}
 
 
 def initializePages():
     """ Set up pagesDict """
-    for language in languages:
+    for language in config.LANGUAGES:
         pagesDict[language.code] = WikiPages(language.name, language.code)
     
 
@@ -35,7 +24,7 @@ def getAndStoreWikiPages():
     """ Get list of all pages and store it to json """
 
     initializePages()
-    for language in languages:
+    for language in config.LANGUAGES:
         pagesDict[language.code].loadFromWiki()
         pagesDict[language.code].saveToJson()
     
@@ -44,13 +33,13 @@ def getWikiPagesFromDisk():
     """ Get wiki pages from json """
 
     initializePages()
-    for language in languages:
+    for language in config.LANGUAGES:
         pagesDict[language.code].loadFromJson()
 
 
 def initializeCommands():
     """ Set up commandsDict """
-    for language in languages:
+    for language in config.LANGUAGES:
         commandsDict[language.code] = Commands(language.name, language.code)
     
 
@@ -58,7 +47,7 @@ def getAndStoreCommands():
     """ Get commands from svn and store to disk """
 
     initializeCommands()
-    for language in languages:
+    for language in config.LANGUAGES:
         commandsDict[language.code].loadFromSvn()
         commandsDict[language.code].saveToJson()
 
@@ -67,7 +56,7 @@ def getCommandsFromDisk():
     """ Get commands from json files """
 
     initializeCommands()
-    for language in languages:
+    for language in config.LANGUAGES:
         commandsDict[language.code].loadFromJson()
 
 
@@ -83,7 +72,7 @@ def analyzeMissingPages():
     header = 'Number of pages'
     print(header)
     print('='*len(header))
-    for language in languages:
+    for language in config.LANGUAGES:
         pagesDict[language.code].printStatus()
         commandsDict[language.code].printStatus()
         i = 0
