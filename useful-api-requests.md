@@ -354,3 +354,93 @@ Response:
         }
     }
 }
+
+## pywikibot.Page(site, 'Hovedside')
+POST data:
+    maxlag=5,
+    format=json,
+    rvprop=ids|flags|timestamp|user|comment|content,
+    prop=info|revisions,
+    titles=Hovedside,
+    meta=userinfo,
+    indexpageids=,
+    action=query,
+    uiprop=blockinfo|hasmsg
+
+## pywikibot pagegenerators.AllpagesPageGenerator
+POST data:
+    inprop=protection
+    maxlag=5
+    gaplimit=500
+    generator=allpages
+    format=json
+    prop=info|imageinfo|categoryinfo
+    gapfrom=geogebra:en
+    meta=userinfo
+    gapnamespace=0
+    action=query
+    iiprop=timestamp|user|comment|url|size|sha1|metadata
+    uiprop=blockinfo|hasmsg
+    indexpageids=
+Response:
+    pages":{
+        "966": {
+            "pageid":966,
+            "ns":0,
+            "title":"Geometri Kommandoer",
+            "touched":"2013-05-16T22:46:53Z",
+            "lastrevid":3449,
+            "counter":879,
+            "length":141,
+            "protection":[]
+        }, "969": {
+            "pageid":969,
+            "ns":0,
+            "title":"GeometriskGjennomsnitt Kommando",
+            "touched":"2013-05-16T22:46:23Z",
+            "lastrevid":3448,
+            "counter":174,
+            "length":157,
+            "protection":[]
+        }, ...
+
+## pagegenerators.AllpagesPageGenerator(starte='v', site=pywikibot.Site('en'), namespace=100, content=True)
+### POST data
+    inprop=protection
+    maxlag=5
+    gaplimit=50
+    generator=allpages
+    format=json
+    rvprop=ids|timestamp|flags|comment|user|content
+    prop=info|imageinfo|categoryinfo|revisions
+    gapfrom=geogebra%3Aen
+    meta=userinfo
+    gapnamespace=100
+    action=query
+    iiprop=timestamp|user|comment|url|size|sha1|metadata
+    uiprop=blockinfo|hasmsg
+    indexpageids=
+### Response
+    {"query-continue":{"allpages":{"gapcontinue":"InversHypergeometrisk_Kommando"}},
+    "query":{
+        "pageids":
+            ["705","558","314","176","750","767","1129","1525","341","178","610","609","194","514","752","519","518","517","210","308","193","724","559","623","628","379","753","370","1484","269","167","672","696","650","684","588","700","739","777","756","1613","685","270","212","757","459","439","443","435","437"],
+        "pages":{
+            "705":{
+                "pageid":705,
+                "ns":100,
+                "title":"Manual:Geometri Kommandoer",
+                "touched":"2013-04-25T20:06:45Z",
+                "lastrevid":3081,
+                "counter":135,
+                "length":1337,
+                "protection":[],
+                "revisions":[{"revid":3081,
+                "parentid":710,
+                "minor":"",
+                "user":"Wallerau",
+                "timestamp":"2013-04-14T13:02:14Z",
+                "comment":"",
+                "contentformat":"text\/x-wiki",
+                "contentmodel":"wikitext",
+                "*":"<noinclude>{{Manual Page|version=4.0}}<\/noinclude>{{command|geometry|category}}\n\n* [[Areal Kommando|Areal]]\n* [[Avstand Kommando|Avstand]]\n* [[Bue Kommando|Bue]]\n* [[Buelengde Kommando|Buelengde]]\n* [[DefinertMangekant Kommando|DefinertMangekant]]\n* [[Delingsforhold Kommando|Delingsforhold]]\n* [[GeometriskSt...
