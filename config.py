@@ -3,14 +3,15 @@
 
 class Language(object):
     """ Class to hold properties of languages, for easier notation (ex lang.code) """
-    self.code='en'
-    self.name='English'
+    code = 'en'
+    name = 'English'
     def __init__(self, code=None, name=None):
         if code:
             self.code = code
         if name:
             self.name = name
-        
+
+
 # global variables
 LANGUAGES = [
     Language(),

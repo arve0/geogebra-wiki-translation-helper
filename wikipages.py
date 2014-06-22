@@ -1,3 +1,12 @@
+"""
+File: wikipages.py
+Author: Arve Seljebu
+Email: arve.seljebu@gmail.com
+Github: arve0
+Description: Class wich fetch all pages from mediawiki.
+"""
+
+
 import json
 from urllib import urlopen
 from urllib import urlencode
@@ -5,84 +14,67 @@ from time import sleep
 import codecs
 
 
-class WikiPages:
+class WikiPages(object):
     """ Class for wikipages """
 
     # variables
-    startLetter = 'a'       # where to start from when getting pages, should be the first letter in the alphabet
+    start_letter = 'a'       # where to start from when getting pages, should be the first letter in the alphabet
 
 
-    def __init__(self, language=None, languageCode=None):
+    def __init__(self, language=None, language_code=None):
         self.language = language or 'English'
-        self.languageCode = languageCode or 'en'
-        self.filename = 'data/wikipages-%s.json' % (self.languageCode,)
+        self.language_code = language_code or 'en'
+        self.filename = 'data/wikipages-%s.json' % (self.language_code,)
 
 
-    def getApiUrl(self):
+    def get_api_url(self):
         """ Returns the the API URL we are working on """
-        return 'http://wiki.geogebra.org/s/%s/api.php' % (self.languageCode,)
+        return 'http://wiki.geogebra.org/s/%s/api.php' % (self.language_code,)
 
 
-    def getAllPagesUrl(self, startLetter):
+    def get_all_pages_url(self, start_letter):
         params = urlencode({
             'action': 'query',
             'list': 'allpages',
-            'apfrom': startLetter,
+            'apfrom': start_letter,
             'aplimit': 5000,
             'format': 'json',
         })
-        return self.getApiUrl() + '?%s' % (params,)
+        return self.get_api_url() + '?%s' % (params,)
 
 
-    def loadFromWiki(self):
-        """ Loads pages from mediawiki API, starting from self.startLetter, and stores them to self.pages """
-        print('Getting pages from wiki. Language: %s(%s)' % (self.language,self.languageCode))
+    def load_from_wiki(self):
+        """ Loads pages from mediawiki API, starting from self.start_letter, and stores them to self.pages """
+        message = 'Getting pages from wiki. Language: %s(%s)' % (self.language,self.language_code)
+        print message
         query = {}
-        query['query-continue'] = { 'allpages': { 'apcontinue': self.startLetter }}
+        query['query-continue'] = { 'allpages': { 'apcontinue': self.start_letter }}
         pages = []
 
         while 'query-continue' in query.keys():
             s = query['query-continue']['allpages']['apcontinue']
-            url = self.getAllPagesUrl(startLetter=s)
+            url = self.get_all_pages_url(start_letter=s)
             response = urlopen(url).read()
             sleep(1) # being nice to the webserver
             query = json.loads(response)
             pages.extend(query['query']['allpages'])
 
         self.pages = pages
-        print('Done. Got %i pages.' % (len(pages),) )
+        message = 'Done. Got %i pages.' % (len(pages),)
+        print message
 
-
-#    def loadLanguageLinksFromWiki(self, titles=['Main Page']):
-#        """ Load language links from wiki. """
-#        params = urlencode({
-#            'action': 'query',
-#            'prop': 'langlinks',
-#            'lllimit': 500,
-#            'titles': '|'.join(titles),
-#            'format': 'json',
-#        })
-#        response = urlopen(url, params).read()
-#        sleep(1)
-#        query = json.loads(response)['query']
-#        pages = query['pages']
-#        links = []
-#        for pageId, page in pages.iteritems():
-#            links.append(page)
-#        return links
-
-
-    def printStatus(self):
+    def print_status(self):
         """ Prints number of pages in object. """
-        print('Language: %s(%s), Number of pages: %i' % (self.language, self.languageCode, len(self.pages)) )
+        message = 'Language: %s(%s), Number of pages: %i' % (self.language, self.language_code, len(self.pages))
+        print message
 
 
-    def saveToJson(self):
+    def save_to_json(self):
         """ Stores the data gotten from the wiki to a json file. """
-        print('Storing data to: ' + self.filename)
+        print 'Storing data to: ' + self.filename
         object = {
             'language': self.language,
-            'languageCode': self.languageCode,
+            'language_code': self.language_code,
             'pages': self.pages,
         }
         f = codecs.open(self.filename, 'w', encoding='utf8')
@@ -90,9 +82,9 @@ class WikiPages:
         f.close()
 
 
-    def loadFromJson(self):
+    def load_from_json(self):
         """ Loads data from json file. """
-        print('Loading file ' + self.filename)
+        print 'Loading file ' + self.filename
         f = codecs.open(self.filename, encoding='utf8')
         object = json.load(f)
         f.close()
