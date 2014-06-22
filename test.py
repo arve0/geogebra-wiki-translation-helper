@@ -8,7 +8,7 @@ import pickle
 from time import sleep
 
 site = pywikibot.Site('en', fam='geogebra')
-pages = pagegenerators.AllpagesPageGenerator(start='v', site=site, namespace=100, content=True)
+pages = pagegenerators.AllpagesPageGenerator(site=site, namespace=100, content=True)
 
 print('generator made, sleep to see when/what is fetched') # seem to be nothing
 sleep(3)
@@ -31,8 +31,9 @@ for (i, page) in enumerate(pages):
         print obj
 print('loop done')
 
-f = open('data/page.dump', 'w')
+f = open('data/pages-en.pickle', 'w')
 pickle.dump(pagestore, f, -1)
+f.close()
 
 
 #pywikibot.Page.editTime
