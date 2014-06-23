@@ -20,6 +20,8 @@ class Commands(object):
         self.language = language or 'English'
         self.language_code = language_code or 'en'
         self.filename = 'data/commands-%s.json' % (self.language_code,)
+        self.commands = None
+        self.raw_data = None
 
         # Infix codes
         if self.language_code == 'nb':
@@ -33,7 +35,11 @@ class Commands(object):
 
 
     def get_api_url(self):
-        return 'https://geogebra.googlecode.com/svn/trunk/geogebra/desktop/geogebra/properties/command%s.properties' % (self.commands_infix,)
+        """
+        Returns URL to command.properties in SVN, for given self.language.
+        """
+        return 'https://geogebra.googlecode.com/svn/trunk/geogebra/desktop/' + \
+           'geogebra/properties/command%s.properties' % (self.commands_infix,)
 
 
     def convert_raw_data_to_dictionary(self):
@@ -47,6 +53,9 @@ class Commands(object):
             translation = ''
             words = line.split('=')
             if '.Syntax' not in words[0]:
+                if words[0] == 'Command':
+                    # Special case
+                    continue
                 translation = words[1]
             else:
                 command = words[0].split('.')[0]
@@ -67,7 +76,9 @@ class Commands(object):
 
 
     def load_from_svn(self):
-        """ Load commands from SVN, convert raw data and store them to self.commands """
+        """
+        Load commands from SVN, convert raw data and store them to self.commands
+        """
         print 'Fetching from SVN...'
         self.raw_data = urlopen(self.get_api_url()).read().decode('ISO-8859-1')
         self.convert_raw_data_to_dictionary()
@@ -76,14 +87,15 @@ class Commands(object):
     def save_to_json(self):
         """ Stores the data gotten from SVN to a json file. """
         print 'Storing data to: ' + self.filename
-        object = {
+        obj = {
             'language': self.language,
             'language_code': self.language_code,
             'commands': self.commands,
         }
         file_ = codecs.open(self.filename, 'w', encoding='utf8')
-        # use utf-8 encoding(instead of escaped ascii), to make json files easy to read for humans
-        json_str = json.dumps(object, ensure_ascii=False, encoding='utf8')
+        # use utf-8 encoding(instead of escaped ascii), to make json files easy
+        # to read for humans
+        json_str = json.dumps(obj, ensure_ascii=False, encoding='utf8')
         file_.write(json_str)
         file_.close()
 
@@ -101,5 +113,6 @@ class Commands(object):
 
     def print_status(self):
         """ Prints number of commands in object. """
-        message = 'Language: %s(%s), Number of commands: %i' % (self.language, self.language_code, len(self.commands))
-        print message
+        msg = 'Language: %s(%s), Number of commands: %i' \
+                % (self.language, self.language_code, len(self.commands))
+        print msg
