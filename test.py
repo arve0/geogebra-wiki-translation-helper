@@ -1,41 +1,50 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """ for testing stuff out """
 
 
 from pywikibot import pagegenerators
 import pywikibot
-import pickle
+from cache import Cache
+import re
 
-from time import sleep
+def strip_namespace(title, namespace):
+    """
+    Returns title without Namespace:
+    """
 
-site = pywikibot.Site('en', fam='geogebra')
-pages = pagegenerators.AllpagesPageGenerator(site=site, namespace=100, content=True)
+    # Special case, no namespace
+    if namespace == '':
+        return title
 
-print('generator made, sleep to see when/what is fetched') # seem to be nothing
-sleep(3)
-print('done sleeping')
+    regex = re.compile('^{0}:'.format(namespace))
+    title = re.sub(regex, '', title)
+    return title
 
-pagestore = []
-for (i, page) in enumerate(pages):
-    obj = {
-        'id': page._pageid,
-        'title': page.title(),
-        'text': page.text,
-        'timestamp': page._timestamp, # useful?
-        'revid': page._revid,
-        'editTime': page.editTime(),
-        'namespace': page.namespace(),
-        'isRedirect': page._isredir,
-    }
-    pagestore.append(obj)
-    if i == 3:
-        print obj
-print('loop done')
+def get_pages():
+    """
+    Retrieve all pages from specified namespace, save to json
+    (data/pages-namespace-languagecode.json) and return list of pages.
 
-f = open('data/pages-en.pickle', 'w')
-pickle.dump(pagestore, f, -1)
-f.close()
+    Raises IOError upon write error.
+    """
 
+    site = pywikibot.Site(code='en',fam='geogebra')
+    pagegen = pagegenerators.AllpagesPageGenerator(
+        site=site, namespace=100, content=True)
 
-#pywikibot.Page.editTime
+    pages = []
+    for page in pagegen:
+        obj = {
+            'id': page._pageid,
+            'title': strip_namespace(page.title(), 'Manual'),
+            'text': page.text,
+            'revid': page._revid,
+            'namespace': page.namespace(),
+            'isRedirect': page._isredir,
+        }
+        pages.append(obj)
 
-#members = [attr for attr in dir(Example()) if not callable(attr) and not attr.startswith("__")]
+    return pages
+
+Cache(get_pages, 'pages-100-en')
