@@ -19,7 +19,7 @@ def main():
     file_.close()
 
     for page in pages:
-        print page
+        print page['title']
 
 
 if __name__ == '__main__':
