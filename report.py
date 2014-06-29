@@ -8,106 +8,80 @@ Github: arve0
 Description: Generates a report on defferences between english and given wiki.
 """
 
+
 import sys
-from wikipages import WikiPages
-from commands import Commands
-import config
+from sources import Pages
+from sources import Commands
+from cache import Cache
+from language import Language
+
 
 if sys.version_info[0] != 2:
     print 'This program is written for python2, as pywikibot uses python2.'
     sys.exit()
 
-pages_dict = {}
-commands_dict = {}
 
-
-def initialize_pages():
-    """ Set up pages_dict """
-    for language in config.LANGUAGES:
-        pages_dict[language.code] = WikiPages(language.name, language.code)
-
-
-def get_and_store_wikipages():
-    """ Get list of all pages and store it to json """
-
-    initialize_pages()
-    for language in config.LANGUAGES:
-        pages_dict[language.code].load_from_wiki()
-        pages_dict[language.code].save_to_json()
-
-
-def get_wiki_pages_from_disk():
-    """ Get wiki pages from json """
-
-    initialize_pages()
-    for language in config.LANGUAGES:
-        pages_dict[language.code].load_from_json()
-
-
-def initialize_commands():
-    """ Set up commands_dict """
-    for language in config.LANGUAGES:
-        commands_dict[language.code] = Commands(language.name, language.code)
-
-
-def get_and_store_commands():
-    """ Get commands from svn and store to disk """
-
-    initialize_commands()
-    for language in config.LANGUAGES:
-        commands_dict[language.code].load_from_svn()
-        commands_dict[language.code].save_to_json()
-
-
-def get_commands_from_disk():
-    """ Get commands from json files """
-
-    initialize_commands()
-    for language in config.LANGUAGES:
-        commands_dict[language.code].load_from_json()
-
-
-def analyze_missing_pages():
+def analyze(language, namespace='Manual'):
     """ Find missing pages (not translated from english) """
-    header = 'Loading from disk'
-    print header
-    print '='*len(header)
-    get_wiki_pages_from_disk()
-    get_commands_from_disk()
-    print ''
+    namespace = namespace.lower().capitalize()
+    language = language.lower()
+    suffix = '-' + language + '-' + namespace
 
-    header = 'Number of pages'
-    print header
-    print '='*len(header)
-    for language in config.LANGUAGES:
-        pages_dict[language.code].print_status()
-        commands_dict[language.code].print_status()
-        i = 0
-        cmd = []
-        for page in pages_dict[language.code].pages:
-            for command in commands_dict[language.code].commands:
-                if command in page['title']:
-                    i += 1
-                    cmd.append(page['title'])
-        print i
+    msg = 'Getting pages and commands to work with'
+    print msg
+    print '='*len(msg)
+
+    en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
+    pages = Cache(Pages(namespace=namespace, language=language).get,
+                  'pages' + suffix)
+
+    en_commands = Cache(Commands(pages=en_pages.data).get, 'commands-en')
+    commands = Cache(Commands(language, pages=pages.data).get,
+                     'commands-' + language)
+
+    # Missing pages
     print ''
+    msg = u'Missing pages in {0}, namespace {1}'\
+            .format(Language(language), namespace)
+    print msg
+    print '='*len(msg)
+
+    for command in commands.data.itervalues():
+        if 'wikiid' not in command.keys():
+            print u'Wikipage missing for command {0}'\
+                    .format(command['translation'])
+
+
+def print_usage():
+    """
+    Print usage of this script.
+    """
+
+    usage = '''
+    Usage:
+    {0} language [namespace]
+
+    Compares given language to English wiki.
+
+    Default values:
+    namespace: 'Manual'
+'''.format(sys.argv[0])
+
+    print usage
 
 
 def main(argv):
     """ process args """
-    if 'get-wiki' in argv:
-        get_and_store_wikipages()
-    elif 'get-commands' in argv:
-        get_and_store_commands()
-    elif 'analyze' in argv:
-        analyze_missing_pages()
-    else:
-        print 'Usage:'
-        print argv[0] + ' command\n'
-        print 'List of commands:'
-        print 'analyze \t- reads data from json and analyzes it'
-        print 'get-commands \t- gets a list of all command commands from SVN and stores it to a json file'
-        print 'get-wiki \t- gets a list of all pages from wiki and stores it to a json file'
+    try:
+        analyze(argv[1], argv[2])
+    except IndexError:
+        try:
+            analyze(argv[1])
+        except IndexError:
+            print_usage()
+        except NameError as error:
+            print error
+            print_usage()
 
 
 if __name__ == '__main__':

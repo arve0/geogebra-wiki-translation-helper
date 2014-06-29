@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
 """
 File: cache.py
 Author: Arve Seljebu
 Email: arve.seljebu@gmail.com
 Github: arve0
-Description: Class Cache: Reads cache/filename.json upon initialization, if not
-             found use getter. Data is available in self.data. Stores self.data
-             to cache/filename.json upon deletion/destruction.
+Description: Class Cache: Reads cache/name.json upon initialization, if not
+             found getter is used. Data is available in self.data. Stores
+             self.data to cache/name.json upon deletion/destruction.
 """
 
 import codecs
@@ -13,27 +14,28 @@ import json
 
 class Cache(object):
     """
-    Holds data and stores it to filename upon deletion/destruction. Then read
-    it from cache upon next initialization.
+    Holds data and stores it to name upon deletion/destruction. Then read it
+    from cache upon next initialization.
     """
 
-    def __init__(self, getter, filename):
+    def __init__(self, getter, name):
         """
-        Set up self.data. Get data from cache/filename.json or getter.
+        Set up self.data. Get data from cache/name.json or getter.
 
         :getter: Source of data. Should return data which is possible to
                  serialize to JSON (dict, list, etc).
-        :filename: Part of filename for cache. Full filename is
-                   cache/filename.json. Should be unique to avoid clashes.
+        :name: Part of filename for cache. Full filename is
+               cache/name.json. Should be unique to avoid clashes.
         """
 
         self._getter = getter
-        self._filename = u'cache/{0}.json'.format(filename)
+        self._filename = u'cache/{0}.json'.format(name)
         self.data = None
 
         try:
             self.load()
         except IOError:
+            print 'Not found. Using getter instead.'
             self.get()
 
 
@@ -51,7 +53,7 @@ class Cache(object):
         print 'Loading {0}'.format(self._filename)
         file_ = codecs.open(self._filename, encoding='utf8')
         self.data = json.load(file_)
-        file.close()
+        file_.close()
 
 
 

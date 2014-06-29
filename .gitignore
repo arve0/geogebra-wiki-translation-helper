@@ -2,4 +2,4 @@
 *.swp
 svn
 *pyc
-data
+cache/*
