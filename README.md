@@ -10,7 +10,15 @@ cd pywikibot-core
 sudo python setup.py install
 ```
 
-## Generate report ##
+## Using ##
+### Update cache ###
+
 ```
-./report.py language-code
+./report.py cache language-code
 ```
+
+### Find missing pages ###
+```
+./report.py missing language-code
+```
+
