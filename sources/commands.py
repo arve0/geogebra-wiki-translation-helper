@@ -41,7 +41,7 @@ class Commands(object):
                     .decode('ISO-8859-1')
             self.convert_raw_data_to_dictionary()
 
-        print 'Fetching commands from SVN...'
+        print u'Fetching {0} commands from SVN.'.format(self.language)
         self._raw_data = urlopen(self._svn_url()).read().decode('ISO-8859-1')
         self.convert_raw_data_to_dictionary()
         self.validate_commands_dict()
@@ -56,14 +56,13 @@ class Commands(object):
         for line in lines:
             words = line.split('=')
             if '.Syntax' not in words[0]:
-                command = words[0]
+                # capitalize without lowering all other chars (ex: nPr Command)
+                command = _capitalize(words[0])
                 key = 'translation'
             else:
-                # here, a object SHOULD exist, but sometimes the properties
-                # file isn't consistent. So lets check.
-                command = words[0].split('.')[0]
+                command = _capitalize(words[0].split('.')[0])
                 key = 'syntax'
-            value = words[1]
+            value = _capitalize(words[1])
             # two possibilities: english or not english
             # if english -> we got empty dictionary (no key)
             # if not english -> we need to update all properties (key exist)
@@ -143,3 +142,9 @@ def _en_svn_url():
     """
     return 'https://geogebra.googlecode.com/svn/trunk/geogebra/' + \
         'desktop/geogebra/properties/command.properties'
+
+def _capitalize(string):
+    """
+    Capitalize a string without lowering all other chararcters.
+    """
+    return string.replace(string[0], string[0].upper(), 1)

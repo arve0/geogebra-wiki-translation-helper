@@ -18,7 +18,7 @@ class Cache(object):
     from cache upon next initialization.
     """
 
-    def __init__(self, getter, name):
+    def __init__(self, getter, name, force=False):
         """
         Set up self.data. Get data from cache/name.json or getter.
 
@@ -32,11 +32,14 @@ class Cache(object):
         self._filename = u'cache/{0}.json'.format(name)
         self.data = None
 
-        try:
-            self.load()
-        except IOError:
-            print 'Not found. Using getter instead.'
+        if force:
             self.get()
+        else:
+            try:
+                self.load()
+            except IOError:
+                print 'Not found. Using getter instead.'
+                self.get()
 
 
 

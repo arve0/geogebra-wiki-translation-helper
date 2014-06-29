@@ -21,9 +21,28 @@ if sys.version_info[0] != 2:
     sys.exit()
 
 
-def analyze(language, namespace='Manual'):
-    """ Find missing pages (not translated from english) """
-    namespace = namespace.lower().capitalize()
+def update_cache(language, namespace):
+    """
+    Find missing pages (not translated from english or not added to wiki)
+
+    :argv: Array. argv[0] language, argv[1] namespace(optional).
+    """
+    suffix = '-' + language + '-' + namespace
+
+    msg = u'Updating cache for {0}, namespace {1}'\
+            .format(Language(language), namespace)
+    print msg
+    print '='*len(msg)
+
+    pages = Cache(Pages(namespace=namespace, language=language).get,
+                  'pages' + suffix, force=True)
+    commands = Cache(Commands(language, pages=pages.data).get,
+                     'commands-' + language, force=True)
+
+
+def find_missing(language, namespace):
+    """Find missing pages (not translated from english or not added to wiki)"""
+    namespace = namespace.capitalize()
     language = language.lower()
     suffix = '-' + language + '-' + namespace
 
@@ -41,7 +60,7 @@ def analyze(language, namespace='Manual'):
 
     # Missing pages
     print ''
-    msg = u'Missing pages in {0}, namespace {1}'\
+    msg = u'Missing command pages in {0}, namespace {1}'\
             .format(Language(language), namespace)
     print msg
     print '='*len(msg)
@@ -58,31 +77,60 @@ def print_usage():
     """
 
     usage = '''
-    Usage:
-    {0} language [namespace]
+    Usage
+    =====
+    {0} command language [namespace]
 
-    Compares given language to English wiki.
+    Commands
+    ========
+    cache: \tUpdate cache of given language and namespace.
 
-    Default values:
+    missing: \tFind missing command wikipages.
+    
+    updated: \tFind wikipages with newer/updated English version.
+
+
+    Default values
+    ==============
     namespace: 'Manual'
 '''.format(sys.argv[0])
 
     print usage
 
 
-def main(argv):
+def main():
     """ process args """
-    try:
-        analyze(argv[1], argv[2])
-    except IndexError:
-        try:
-            analyze(argv[1])
-        except IndexError:
-            print_usage()
-        except NameError as error:
-            print error
-            print_usage()
+    length = len(sys.argv)
+    if length == 4:
+        language = sys.argv[2].lower()
+        namespace = sys.argv[3].capitalize()
+    elif length == 3:
+        language = sys.argv[2].lower()
+        namespace = 'Manual'
+    else:
+        print_usage()
+        sys.exit()
+
+    cmd = sys.argv[1]
+    if cmd == 'cache':
+        update_cache(language, namespace)
+    elif cmd == 'missing':
+        find_missing(language, namespace)
+    #elif sys.argv[2] == 'updated':
+        #find_updated(sys.argv)
+
+
+    #try:
+        #analyze(argv[1], argv[2])
+    #except IndexError:
+        #try:
+            #analyze(argv[1])
+        #except IndexError:
+            #print_usage()
+        #except NameError as error:
+            #print error
+            #print_usage()
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()

@@ -28,7 +28,7 @@ class Pages(object):
         """
         self.language = Language(language.lower())
         self._site = pywikibot.Site(code=language, fam='geogebra')
-        self.namespace = namespace.lower().capitalize()
+        self.namespace = namespace.capitalize()
         # namespace_number requires _site
         self.namespace_number = self._get_namespace_number()
         self.pages = None
@@ -47,9 +47,12 @@ class Pages(object):
         print u'Getting pages from {0} wiki in namespace {1}.'\
                 .format(self.language, self.namespace)
         for page in pages:
+            title = self._strip_namespace(page.title())
+            # capitalize without lower all other chars (ex: nPr Command)
+            title = title.replace(title[0], title[0].upper(), 1)
             obj = {
                 'id': page._pageid,
-                'title': self._strip_namespace(page.title()),
+                'title': title,
                 'text': page.text,
                 'revid': page._revid,
                 'editTime': page.editTime().toISOformat(),
