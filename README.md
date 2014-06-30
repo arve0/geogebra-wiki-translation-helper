@@ -1,5 +1,13 @@
 # GeoGebra Wiki translation helper #
-This code will help in the translation work of the wiki by generating useful reports.
+Scripts for easier translation of the GeoGebra manual on the wiki. Uses JSON-cache to save server and bandwidth strain. Use '''./report cache language-code''' to update cache.
+
+Helps with:
+- Generating reports
+- Finding updated wikipages in english
+- Finding missing pages
+- Editing from text files
+    - use your favorite text editor
+- Uploading from text files
 
 
 ## Install ##
@@ -10,11 +18,66 @@ cd pywikibot-core
 sudo python setup.py install
 ```
 
-## Using ##
+
+## Usage ##
+
+### Download wikipages to text files ###
 ```
-./report.py command language-code
+./save.py language-code [namespace]
 ```
-### Update cache ###
+Saves pages to text files in existing directory 'pages'. Filename format is 'Title.lang.ns.wiki'. File encoding is UTF-8. Namespace is optional.
+
+Default namespace is 'Manual' (applies for all commands). For empty namespace, use 'Main'.
+#### Example ####
+```
+./save.py nb
+```
+Output:
+```
+Loading cache/pages-nb-Manual.json
+Saving pages to text files.
+```
+
+
+### Upload text file to wiki ###
+```
+./upload.py [comment="optional comment"] filename(s)
+```
+Upload text files to wiki. Filename is used as title/pagename. Expexts filename format 'Title.lang.ns.wiki'. If several files is given, script will upload them in turn. Leading directory is stripped filenames. Comment is optional.
+#### Example ####
+```
+./upload.py comment="fikset versjon" pages/Vektor\ Kommando.nb.Manual.wiki
+```
+Output:
+```
+CONTENT:
+<noinclude>{{Manual Page|version=4.4}}</noinclude>{{command|vector-matrix|Vektor}}
+{{unchecked}}
+
+;Vektor[ <Punkt> ]
+:Returnerer posisjonsvektoren til punktet. Det vil si vektoren fra origo til punktet.
+;Vektor[ <Startpunkt A>, <Sluttpunkt B> ]
+:Returnerer vektoren som starter i ''A'' og slutter i ''B''.
+
+{{note|Se også verktøyet [[image:Tool Vector between Two Points.gif]] [[Vektor mellom to punkt Verktøy|Vektor mellom to punkt]].}}
+
+{{betamanual|version=5.0|
+{{Note|1=Fra GeoGebra 5 vil denne kommandoen også kunne brukes i 3D.}}
+}}
+
+UPLOADING..
+Sleeping for 8.2 seconds, 2014-06-30 22:58:13
+WARNING: API warning (main): Unrecognized parameter: 'assert'
+Page [[Manual:Vektor Kommando]] saved
+```
+
+
+### Reports ###
+```
+./report.py command language-code [namespace]
+```
+
+#### Update cache ####
 
 ```
 ./report.py cache nb
@@ -29,7 +92,7 @@ Saving cache: cache/pages-nb-Manual.json
 Saving cache: cache/commands-nb.json
 ```
 
-### Find missing pages ###
+#### Find missing pages ####
 ```
 ./report.py missing nb
 ```
@@ -55,7 +118,7 @@ Wikipage missing for command Topp
 ...
 ```
 
-### Find updated pages ###
+#### Find updated pages ####
 ```
 ./report.py updated nb
 ```
