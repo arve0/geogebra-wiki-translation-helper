@@ -3,3 +3,5 @@
 svn
 *pyc
 cache/*
+test.py
+pages/*
