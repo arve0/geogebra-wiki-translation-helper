@@ -47,6 +47,7 @@ def main():
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix)
 
+    print 'Saving pages to text files.'
     for page in pages.data:
         t = page['title'].replace('/', '\\')
         filename = u'pages/' + t + '.' + language + '.' + namespace + '.wiki'

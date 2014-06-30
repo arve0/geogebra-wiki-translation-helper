@@ -64,7 +64,7 @@ def main():
         text = file_.read()
         file_.close()
 
-        print 'LOCAL:'
+        print 'CONTENT:'
         print text
 
         title = title[0:match.start()].replace('\\', '/').decode('utf8')
@@ -78,8 +78,6 @@ def main():
         namespace_number = site.ns_index(namespace)
 
         page = pywikibot.Page(source=site, title=title, ns=namespace_number)
-        print 'WIKI:'
-        print page.text
 
         if comment == None:
             comment = 'Uploaded from geogebra-wiki-translation-helper'
@@ -87,8 +85,6 @@ def main():
         print 'UPLOADING..'
         page.text = text
         page.save(comment=comment)
-
-    print 'Done.'
 
 
 if __name__ == '__main__':
