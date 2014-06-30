@@ -1,5 +1,7 @@
 # GeoGebra Wiki translation helper #
-Scripts for helping translation of the GeoGebra manual on the wiki. Uses JSON-cache to avoid server and bandwidth strain. ReUse `./report cache language-code` to update cache.
+Scripts for helping translation of the GeoGebra manual on the wiki.
+
+Uses cache to avoid server and bandwidth strain. **Remember** to update cache once in a while! `./report cache language-code`
 
 Helps with:
 - Generating reports
