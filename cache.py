@@ -20,17 +20,18 @@ class Cache(object):
 
     def __init__(self, getter, name, force=False):
         """
-        Set up self.data. Get data from cache/name.json or getter.
+        Set up data and dirty(false). Get data from cache/name.json or getter.
+        If self.dirty is true, self.data is saved upon object desctruction.
 
         :getter: Source of data. Should return data which is possible to
                  serialize to JSON (dict, list, etc).
         :name: Part of filename for cache. Full filename is
                cache/name.json. Should be unique to avoid clashes.
         """
-
         self._getter = getter
         self._filename = u'cache/{0}.json'.format(name)
         self.data = None
+        self.dirty = False
 
         if force:
             self.get()
@@ -45,14 +46,13 @@ class Cache(object):
 
     def get(self):
         """ Get data to self.data from self._getter. """
-
         self.data = self._getter()
+        self.dirty = True
 
 
 
     def load(self):
         """ Load self._filename to self.data. """
-
         print 'Loading {0}'.format(self._filename)
         file_ = codecs.open(self._filename, encoding='utf8')
         self.data = json.load(file_)
@@ -62,7 +62,6 @@ class Cache(object):
 
     def save(self):
         """ Save self.data to self._filename. """
-
         print u'Saving cache: {0}'.format(self._filename)
         file_ = codecs.open(self._filename, 'w', encoding='utf8')
         # make json files easy to read, use indention + utf8 encoding
@@ -75,5 +74,5 @@ class Cache(object):
 
     def __del__(self):
         """ Save cache upon deletion/destruction. """
-
-        self.save()
+        if self.dirty:
+            self.save()
