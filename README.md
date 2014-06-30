@@ -22,3 +22,7 @@ sudo python setup.py install
 ./report.py missing language-code
 ```
 
+### Find updated pages ###
+```
+./report.py updated language-code
+```
