@@ -39,7 +39,7 @@ class Cache(object):
             try:
                 self.load()
             except IOError:
-                print 'Not found. Using getter instead.'
+                print u'Not found. Using getter instead.'
                 self.get()
 
 
@@ -53,7 +53,7 @@ class Cache(object):
 
     def load(self):
         """ Load self._filename to self.data. """
-        print 'Loading {0}'.format(self._filename)
+        print u'Loading {0}'.format(self._filename)
         file_ = codecs.open(self._filename, encoding='utf8')
         self.data = json.load(file_)
         file_.close()

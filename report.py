@@ -15,9 +15,13 @@ from sources import Commands
 from cache import Cache
 from language import Language
 
+# utf8 hack
+# http://stackoverflow.com/questions/492483/setting-the-correct-encoding-when-piping-stdout-in-python
+import codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 if sys.version_info[0] != 2:
-    print 'This program is written for python2, as pywikibot uses python2.'
+    print u'This program is written for python2, as pywikibot uses python2.'
     sys.exit()
 
 
@@ -28,7 +32,7 @@ def update_cache(language, namespace):
     msg = u'Updating cache for {0}, namespace {1}'\
             .format(Language(language), namespace)
     print msg
-    print '='*len(msg)
+    print u'='*len(msg)
 
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix, force=True)
@@ -42,7 +46,7 @@ def find_missing(language, namespace):
 
     msg = 'Getting pages and commands to work with'
     print msg
-    print '='*len(msg)
+    print u'='*len(msg)
 
     en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,
@@ -53,11 +57,11 @@ def find_missing(language, namespace):
                      'commands-' + language)
 
     # Missing pages
-    print ''
+    print u''
     msg = u'Missing command pages in {0}, namespace {1}'\
             .format(Language(language), namespace)
     print msg
-    print '='*len(msg)
+    print u'='*len(msg)
 
     for command in commands.data.itervalues():
         if 'wikiid' not in command.keys():
@@ -71,7 +75,7 @@ def find_updated(language, namespace):
 
     msg = 'Getting pages and commands to work with'
     print msg
-    print '='*len(msg)
+    print u'='*len(msg)
 
     en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,
@@ -82,11 +86,11 @@ def find_updated(language, namespace):
                      'commands-' + language)
 
     # Updated pages
-    print ''
+    print u''
     msg = u'Updated command pages in {0}, namespace {1}'\
             .format(Language(language), namespace)
     print msg
-    print '='*len(msg)
+    print u'='*len(msg)
 
     for (command_name, command) in commands.data.iteritems():
         if 'wikiid' not in command.keys():
@@ -111,7 +115,7 @@ def find_updated(language, namespace):
             # put time 50 chars to right
             print u'{0} updated\r\x1b[50C{1}'.format(title, time)
             print u'{0} updated\r\x1b[50C{1}'.format(en_title, en_time)
-            print ''
+            print u''
 
 
 def print_usage():
@@ -161,18 +165,6 @@ def main():
         find_missing(language, namespace)
     elif cmd == 'updated':
         find_updated(language, namespace)
-
-
-    #try:
-        #analyze(argv[1], argv[2])
-    #except IndexError:
-        #try:
-            #analyze(argv[1])
-        #except IndexError:
-            #print_usage()
-        #except NameError as error:
-            #print error
-            #print_usage()
 
 
 if __name__ == '__main__':
