@@ -1,15 +1,15 @@
 # GeoGebra Wiki translation helper #
 Scripts for helping translation of the GeoGebra manual on the wiki.
 
-Uses cache to avoid server and bandwidth strain. **Remember** to update cache once in a while! `./report.py cache language-code`
-
-Helps with:
+Current features:
 - Generating reports
-- Finding updated wikipages in english
-- Finding missing pages
+    - Finding updated wikipages in english
+    - Finding missing pages
 - Editing from text files
     - use your favorite text editor
 - Uploading from text files
+
+Uses cache to avoid server and bandwidth strain. **Remember** to update cache once in a while! `./report.py cache language-code`
 
 
 ## Install ##
