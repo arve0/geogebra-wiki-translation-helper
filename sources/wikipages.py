@@ -71,7 +71,7 @@ class WikiPages(object):
 
     def save_to_json(self):
         """ Stores the data gotten from the wiki to a json file. """
-        print 'Storing data to: ' + self.filename
+        print u'Storing data to: ' + self.filename
         object = {
             'language': self.language,
             'language_code': self.language_code,
@@ -84,7 +84,7 @@ class WikiPages(object):
 
     def load_from_json(self):
         """ Loads data from json file. """
-        print 'Loading file ' + self.filename
+        print u'Loading file ' + self.filename
         f = codecs.open(self.filename, encoding='utf8')
         object = json.load(f)
         f.close()

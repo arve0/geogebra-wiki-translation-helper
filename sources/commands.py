@@ -116,7 +116,7 @@ class Commands(object):
                     obj['translation']: command
                 })
             else:
-                print 'ERROR: Command %s does not have a translation property.'\
+                print u'ERROR: %s does not have a translation property.'\
                         % (command,)
 
 
