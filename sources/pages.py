@@ -78,8 +78,8 @@ class Pages(object):
 
         namespace_number = self._site.ns_index(namespace)
         if namespace_number == None:
-            raise NameError('Namespace {0} not'.format(self.namespace) +\
-                    ' found in "{0}" wiki.'.format(self.language))
+            raise NameError(u'Namespace {0} not found in {1} wiki.'\
+                    .format(self.namespace, self.language).encode('utf8'))
 
         return namespace_number
 
@@ -103,7 +103,7 @@ class Pages(object):
         """
         msg = 'Page titles'
         print msg
-        print '='*len(msg)
+        print u'='*len(msg)
 
         for page in self.pages:
             # Print title + beginning of text (strip until ;)
