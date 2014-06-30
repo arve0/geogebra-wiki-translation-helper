@@ -78,7 +78,7 @@ class Pages(object):
 
         namespace_number = self._site.ns_index(namespace)
         if namespace_number == None:
-            raise NameError('ERROR: Namespace {0} not'.format(self.namespace) +\
+            raise NameError('Namespace {0} not'.format(self.namespace) +\
                     ' found in "{0}" wiki.'.format(self.language))
 
         return namespace_number

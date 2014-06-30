@@ -84,18 +84,16 @@ class Commands(object):
         Find command in wiki. Save pageid as command['wikiid'] on command
         dictionary.
         """
-        self.map_translated_commands()
-        regex = ' ' + self.commands['Command']['translation'] + '$'
-        for page in self.pages:
-            match = re.search(regex, page['title'])
-            # page name ending in " Command" (Command translated)
-            if match != None:
-                command = page['title'][0:match.start()]
-                if command in self.commands_translated.iterkeys():
-                    en_command = self.commands_translated[command]
-                    self.commands[en_command].update({
-                        'wikiid': page['id']
-                    })
+        self.reverse_translated_commands()
+        cmd_string = self.commands['Command']['translation']
+        cmd_pages = [p for p in self.pages if is_command_page(p, cmd_string)]
+        for page in cmd_pages:
+            command = page['title'].replace(u' ' + cmd_string, '')
+            if command in self.commands_translated.iterkeys():
+                en_command = self.commands_translated[command]
+                self.commands[en_command].update({
+                    'wikiid': page['id']
+                })
 
     def validate_commands_dict(self):
         """
@@ -108,7 +106,7 @@ class Commands(object):
                 })
 
 
-    def map_translated_commands(self):
+    def reverse_translated_commands(self):
         """
         Map translated commands to English commands (reverse dict).
         """
@@ -148,3 +146,11 @@ def _capitalize(string):
     Capitalize a string without lowering all other chararcters.
     """
     return string.replace(string[0], string[0].upper(), 1)
+
+def is_command_page(page, command_string):
+    """
+    Return true if ' Command$' matches page['title'].
+    """
+    regex = ' ' + command_string + '$'
+    match = re.search(regex, page['title'])
+    return match != None

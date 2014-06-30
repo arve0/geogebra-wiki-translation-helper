@@ -22,11 +22,7 @@ if sys.version_info[0] != 2:
 
 
 def update_cache(language, namespace):
-    """
-    Find missing pages (not translated from english or not added to wiki)
-
-    :argv: Array. argv[0] language, argv[1] namespace(optional).
-    """
+    """Update cache of given language and namespace."""
     suffix = '-' + language + '-' + namespace
 
     msg = u'Updating cache for {0}, namespace {1}'\
@@ -41,9 +37,7 @@ def update_cache(language, namespace):
 
 
 def find_missing(language, namespace):
-    """Find missing pages (not translated from english or not added to wiki)"""
-    namespace = namespace.capitalize()
-    language = language.lower()
+    """Find missing pages (not translated from english or not added to wiki)."""
     suffix = '-' + language + '-' + namespace
 
     msg = 'Getting pages and commands to work with'
@@ -69,6 +63,55 @@ def find_missing(language, namespace):
         if 'wikiid' not in command.keys():
             print u'Wikipage missing for command {0}'\
                     .format(command['translation'])
+
+
+def find_updated(language, namespace):
+    """Find command pages which is updated in English wiki."""
+    suffix = '-' + language + '-' + namespace
+
+    msg = 'Getting pages and commands to work with'
+    print msg
+    print '='*len(msg)
+
+    en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
+    pages = Cache(Pages(namespace=namespace, language=language).get,
+                  'pages' + suffix)
+
+    en_commands = Cache(Commands(pages=en_pages.data).get, 'commands-en')
+    commands = Cache(Commands(language, pages=pages.data).get,
+                     'commands-' + language)
+
+    # Updated pages
+    print ''
+    msg = u'Updated command pages in {0}, namespace {1}'\
+            .format(Language(language), namespace)
+    print msg
+    print '='*len(msg)
+
+    for (command_name, command) in commands.data.iteritems():
+        if 'wikiid' not in command.keys():
+            # command does not exist in wiki
+            continue
+
+        page = [p for p in pages.data if p['id'] == command['wikiid']]
+        en_command = en_commands.data[command_name]
+        en_page = [p for p in en_pages.data if p['id'] == en_command['wikiid']]
+
+        # make sure we get only one match
+        assert len(page) == 1 and len(en_page) == 1
+        page = page[0]
+        en_page = en_page[0]
+
+        # short names
+        title = page['title']
+        time = page['editTime']
+        en_title = en_page['title']
+        en_time = en_page['editTime']
+        if time < en_time:
+            # put time 50 chars to right
+            print u'{0} updated\r\x1b[50C{1}'.format(title, time)
+            print u'{0} updated\r\x1b[50C{1}'.format(en_title, en_time)
+            print ''
 
 
 def print_usage():
@@ -116,8 +159,8 @@ def main():
         update_cache(language, namespace)
     elif cmd == 'missing':
         find_missing(language, namespace)
-    #elif sys.argv[2] == 'updated':
-        #find_updated(sys.argv)
+    elif cmd == 'updated':
+        find_updated(language, namespace)
 
 
     #try:
