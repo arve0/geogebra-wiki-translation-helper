@@ -94,7 +94,7 @@ Saving cache: cache/pages-nb-Manual.json
 Saving cache: cache/commands-nb.json
 ```
 #### Generating report ####
-This will generate a (wiki page)[http://wiki.geogebra.org/nb/Translation_Report] with all reports.
+This will generate a [wiki page](http://wiki.geogebra.org/nb/Translation_Report) with all reports.
 ```
 ./report.py wiki nb
 ```
