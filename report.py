@@ -14,6 +14,7 @@ from sources import Pages
 from sources import Commands
 from cache import Cache
 from language import Language
+import pywikibot
 
 # utf8 hack
 # http://stackoverflow.com/questions/492483/setting-the-correct-encoding-when-piping-stdout-in-python
@@ -40,42 +41,53 @@ def update_cache(language, namespace):
                      'commands-' + language, force=True)
 
 
-def find_missing(language, namespace):
+def find_missing(language, namespace, console_output=False):
     """Find missing pages (not translated from english or not added to wiki)."""
     suffix = '-' + language + '-' + namespace
 
-    msg = 'Getting pages and commands to work with'
-    print msg
-    print u'='*len(msg)
+    print u'Getting pages and commands from cache'
 
-    en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix)
 
-    en_commands = Cache(Commands(pages=en_pages.data).get, 'commands-en')
     commands = Cache(Commands(language, pages=pages.data).get,
                      'commands-' + language)
 
     # Missing pages
-    print u''
-    msg = u'Missing command pages in {0}, namespace {1}'\
-            .format(Language(language), namespace)
-    print msg
-    print u'='*len(msg)
+    msg = u'== Missing command pages ==\n'
+    if console_output:
+        print msg
 
-    for command in commands.data.itervalues():
+    msg += u'{| class="wikitable"\n'
+    msg += u'|- <!-- header -->\n'
+    msg += u'! Missing !! English page\n'
+
+    row = 1
+    cmd_string = u' ' + commands.data['Command']['translation']
+    for (command_key, command) in commands.data.iteritems():
         if 'wikiid' not in command.keys():
-            print u'Wikipage missing for command {0}'\
-                    .format(command['translation'])
+            if console_output:
+                print (u'Wikipage missing for command {0}'
+                       .format(command['translation']))
+            title = command['translation'] + cmd_string
+            link = namespace + u':' + title
+            en_title = command_key + u' Command'
+            en_link = namespace + u':' + en_title
+            msg += u'|- <-- row {0} -->\n'.format(row)
+            row += 1
+            msg += (u'| [[{0}|{1}]] || [[:en:{2}|{3}]]\n'
+                    .format(link, title, en_link, en_title))
+
+    msg += u'|}\n'
+
+    return msg
 
 
-def find_updated(language, namespace):
+def find_updated(language, namespace, console_output=False):
     """Find command pages which is updated in English wiki."""
     suffix = '-' + language + '-' + namespace
 
-    msg = 'Getting pages and commands to work with'
-    print msg
-    print u'='*len(msg)
+    print u'Getting pages and commands from cache'
 
     en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,
@@ -86,12 +98,15 @@ def find_updated(language, namespace):
                      'commands-' + language)
 
     # Updated pages
-    print u''
-    msg = u'Updated command pages in {0}, namespace {1}'\
-            .format(Language(language), namespace)
-    print msg
-    print u'='*len(msg)
+    msg = u'== Updated command pages ==\n'
+    if console_output:
+        print msg
 
+    msg += u'{| class="wikitable"\n'
+    msg += u'|- <!-- header -->\n'
+    msg += u'! Page !! Last edit !! English page !! Last edit\n'
+
+    row = 1
     for (command_name, command) in commands.data.iteritems():
         if 'wikiid' not in command.keys():
             # command does not exist in wiki
@@ -108,14 +123,43 @@ def find_updated(language, namespace):
 
         # short names
         title = page['title']
+        link = page['fullTitle']
         time = page['editTime']
         en_title = en_page['title']
+        en_link = en_page['fullTitle']
         en_time = en_page['editTime']
         if time < en_time:
             # put time 50 chars to right
-            print u'{0} updated\r\x1b[50C{1}'.format(title, time)
-            print u'{0} updated\r\x1b[50C{1}'.format(en_title, en_time)
-            print u''
+            if console_output:
+                print u'{0} updated\r\x1b[50C{1}'.format(title, time)
+                print u'{0} updated\r\x1b[50C{1}'.format(en_title, en_time)
+                print u''
+            msg += u'|- <-- row {0} -->\n'.format(row)
+            row += 1
+            msg += u'| [[{0}|{1}]] || {2}'.format(link, title, time)
+            msg += (u'|| [[:en:{0}|{1}]] || {2}\n'
+                    .format(en_link, en_title, en_time))
+
+    msg += u'|}\n'
+
+    return msg
+
+
+def wiki(language, namespace):
+    """
+    Run all reports and write result to wikipage 'Translation Report'.
+    """
+
+    site = pywikibot.Site(code=language, fam='geogebra')
+    page = pywikibot.Page(site, 'Translation Report')
+
+    page.text = find_missing(language, namespace)
+    page.text += find_updated(language, namespace)
+
+    print (u'Saving to http://wiki.geogebra.org/{0}/Translation_Report'
+           .format(language))
+    page.save(comment='geogebra wiki translation helper')
+
 
 
 def print_usage():
@@ -162,9 +206,11 @@ def main():
     if cmd == 'cache':
         update_cache(language, namespace)
     elif cmd == 'missing':
-        find_missing(language, namespace)
+        find_missing(language, namespace, True)
     elif cmd == 'updated':
-        find_updated(language, namespace)
+        find_updated(language, namespace, True)
+    elif cmd == 'wiki':
+        wiki(language, namespace)
 
 
 if __name__ == '__main__':
