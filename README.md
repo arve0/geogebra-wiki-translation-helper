@@ -93,6 +93,28 @@ Fetching Norsk bokmål(nb) commands from SVN.
 Saving cache: cache/pages-nb-Manual.json
 Saving cache: cache/commands-nb.json
 ```
+#### Generating report ####
+This will generate a (wiki page)[http://wiki.geogebra.org/nb/Translation_Report] with all reports.
+```
+./report.py wiki nb
+```
+Output:
+```
+Getting pages and commands from cache
+Loading cache/pages-nb-Manual.json
+Loading cache/commands-nb.json
+Getting pages and commands from cache
+Loading cache/pages-en-Manual.json
+Loading cache/pages-nb-Manual.json
+Loading cache/commands-en.json
+Loading cache/commands-nb.json
+Saving to http://wiki.geogebra.org/nb/Translation_Report
+Sleeping for 7.4 seconds, 2014-07-02 23:45:29
+WARNING: API warning (main): Unrecognized parameter: 'assert'
+Page [[Translation Report]] saved
+```
+
+
 
 #### Find missing pages ####
 ```
