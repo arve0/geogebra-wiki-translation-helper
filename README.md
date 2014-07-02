@@ -1,5 +1,5 @@
 # GeoGebra Wiki translation helper #
-Scripts for helping translation of the GeoGebra manual on the [wiki](http://wiki.geogebra.org/).
+Scripts for helping translation of the GeoGebra manual on the [wiki](http://wiki.geogebra.org/). See one of the reports here: http://wiki.geogebra.org/nb/Translation_Report
 
 Current features:
 - Generating reports
