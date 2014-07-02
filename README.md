@@ -151,3 +151,8 @@ Delingsforhold Kommando updated                   2012-10-05T09:55:59Z
 AffineRatio Command updated                       2013-06-14T10:00:22Z
 ...
 ```
+
+## Requirements ##
+Scripts are only tested on Mac OS X.
+
+Forward slashes in titles is converted to backward slashes, which means that saving to text files will not work for windows file systems.
