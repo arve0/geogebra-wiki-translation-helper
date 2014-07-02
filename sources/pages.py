@@ -47,12 +47,10 @@ class Pages(object):
         print u'Getting pages from {0} wiki in namespace {1}.'\
                 .format(self.language, self.namespace)
         for page in pages:
-            title = self._strip_namespace(page.title())
-            # capitalize without lower all other chars (ex: nPr Command)
-            title = title.replace(title[0], title[0].upper(), 1)
             obj = {
                 'id': page._pageid,
-                'title': title,
+                'title': page.title(withNamespace=False),
+                'fullTitle': page.title(),
                 'text': page.text,
                 'revid': page._revid,
                 'editTime': page.editTime().toISOformat(),
@@ -82,19 +80,6 @@ class Pages(object):
                     .format(self.namespace, self.language).encode('utf8'))
 
         return namespace_number
-
-
-    def _strip_namespace(self, title):
-        """
-        Returns title without Namespace:
-        """
-        # Special case, no namespace
-        if self.namespace_number == 0:
-            return title
-
-        regex = re.compile('^{0}:'.format(self.namespace))
-        title = re.sub(regex, '', title)
-        return title
 
 
     def print_pages(self):

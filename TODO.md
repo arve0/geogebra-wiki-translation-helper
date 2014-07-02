@@ -4,3 +4,4 @@
 - [ ] find-size-difference
 - [ ] find-wrong-links
 - [ ] find-missing-links
+- [ ] translate namespace (eg manual) - wiki.properties
