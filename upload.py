@@ -75,7 +75,8 @@ def main():
         namespace = match.groups()[1]
         if namespace == 'Main':
             namespace = ''
-        namespace_number = site.ns_index(namespace)
+        en_site = pywikibot.Site('en', 'geogebra')
+        namespace_number = en_site.ns_index(namespace)
 
         page = pywikibot.Page(source=site, title=title, ns=namespace_number)
 

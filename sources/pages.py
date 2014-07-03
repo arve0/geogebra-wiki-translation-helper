@@ -74,10 +74,12 @@ class Pages(object):
         else:
             namespace = self.namespace
 
-        namespace_number = self._site.ns_index(namespace)
+        en_site = pywikibot.Site('en', 'geogebra')
+        namespace_number = en_site.ns_index(namespace)
+
         if namespace_number == None:
-            raise NameError(u'Namespace {0} not found in {1} wiki.'\
-                    .format(self.namespace, self.language).encode('utf8'))
+            raise NameError(u'Namespace {0} not found in english wiki.'\
+                    .format(self.namespace).encode('utf8'))
 
         return namespace_number
 

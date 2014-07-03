@@ -25,7 +25,8 @@ def print_usage():
 
     Default values
     ==============
-    namespace: 'Manual'
+    namespace: 'Manual' - Should be in english. Eg: Main, Manual.
+                          List here http://wiki.geogebra.org/en/Special:Categories
 '''.format(sys.argv[0])
     print usage
 
