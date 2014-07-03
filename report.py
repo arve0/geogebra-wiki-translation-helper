@@ -166,8 +166,8 @@ def find_updated(language, namespace, console_output=False):
         if time < en_time:
             if console_output:
                 # \r\x1b[50C - 50 chars right from start of line
-                print u'{0} updated\r\x1b[50C{1}'.format(title, time)
-                print u'{0} updated\r\x1b[50C{1}'.format(en_title, en_time)
+                print u'{0} \r\x1b[50C{1}'.format(title, time)
+                print u'{0} \r\x1b[50C{1}'.format(en_title, en_time)
                 print u''
             msg += u'|- <-- row {0} -->\n'.format(row)
             row += 1

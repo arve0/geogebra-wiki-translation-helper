@@ -42,7 +42,7 @@ class Commands(object):
             self.convert_raw_data_to_dictionary()
 
         print u'Fetching {0} commands from SVN.'.format(self.language)
-        self._raw_data = urlopen(self._svn_url()).read().decode('ISO-8859-1')
+        self._raw_data = urlopen(self._svn_url()).read().decode('latin1')
         self.convert_raw_data_to_dictionary()
         self.validate_commands_dict()
         self.link_pageid()
@@ -62,7 +62,10 @@ class Commands(object):
             else:
                 command = _capitalize(words[0].split('.')[0])
                 key = 'syntax'
+            # raw data is escaped unicode, to keep format(explicit \n), decode
+            # as latin1(back to str) -> decode as escaped unicode
             value = _capitalize(words[1])
+            value = value.encode('latin1').decode('unicode-escape')
             # two possibilities: english or not english
             # if english -> we got empty dictionary (no key)
             # if not english -> we need to update all properties (key exist)
