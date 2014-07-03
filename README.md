@@ -122,13 +122,6 @@ Page [[Translation Report]] saved
 ```
 Output:
 ```
-Getting pages and commands to work with
-=======================================
-Loading cache/pages-en-Manual.json
-Loading cache/pages-nb-Manual.json
-Loading cache/commands-en.json
-Loading cache/commands-nb.json
-
 Missing command pages in Norsk bokmål(nb), namespace Manual
 ===========================================================
 Wikipage missing for command Polyeder
@@ -148,13 +141,6 @@ Wikipage missing for command Topp
 ```
 Output:
 ```
-Getting pages and commands to work with
-=======================================
-Loading cache/pages-en-Manual.json
-Loading cache/pages-nb-Manual.json
-Loading cache/commands-en.json
-Loading cache/commands-nb.json
-
 Updated command pages in Norsk bokmål(nb), namespace Manual
 ===========================================================
 Reg Kommando updated                              2012-12-30T14:50:41Z
@@ -172,6 +158,23 @@ MeanY Command updated                             2013-05-03T13:14:44Z
 Delingsforhold Kommando updated                   2012-10-05T09:55:59Z
 AffineRatio Command updated                       2013-06-14T10:00:22Z
 ...
+```
+
+#### Find size difference in pages ####
+```
+./report.py size nb
+```
+Output:
+```
+== Size differences ==
+
+Title, largest, english title, difference.
+
+SpillLyd Kommando --> PlaySound Command                               4205 chars
+
+LøsODE Kommando --> SolveODE Command                                  3848 chars
+
+FordelingBinomial Kommando --> BinomialDist Command                   2667 chars
 ```
 
 ## Requirements ##
