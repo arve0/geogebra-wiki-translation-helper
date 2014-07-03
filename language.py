@@ -12,13 +12,37 @@ class Language(object):
         'en': u'English',
         'nb': u'Norsk bokmål',
         'nn': u'Norsk nynorsk',
+        'bs': u'Početna strana',
+        'ca': u'Pàgina principal',
+        'cs': u'Hlavní stránka',
+        'da': u'Forside',
+        'de': u'Hauptseite',
+        'es': u'Página Principal',
+        'et': u'Pealeht',
+        'fa': u'صفحه اصلی',
+        'fr': u'Accueil',
+        'he': u'עמוד מרכזי',
+        'hr': u'Glavna stranica',
+        'hu': u'Főoldal',
+        'is': u'Aðalsíða',
+        'it': u'Pagina principale',
+        'kk': u'Басты бет',
+        'ko': u'메인 페이지',
+        'lt': u'Pagrindinis puslapis',
+        'mk': u'Главна страна',
+        'pl': u'Strona główna',
+        'pt': u'Página Principal',
+        'sk': u'Hlavná stránka',
+        'sl': u'Glavna stran',
+        'tr': u'Ana Sayfa',
+        'zh': u'首页',
     }
 
     def __init__(self, code):
         self.code = code
         try:
             self.name = self._languages[code]
-        except KeyError as error:
+        except KeyError:
             raise NameError('Language code "' + code + '" not found. '\
                 'Please add it to language.py.')
 
