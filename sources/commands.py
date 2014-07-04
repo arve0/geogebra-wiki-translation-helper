@@ -41,7 +41,7 @@ class Commands(object):
                     .decode('ISO-8859-1')
             self.convert_raw_data_to_dictionary()
 
-        print u'Fetching {0} commands from SVN.'.format(self.language)
+        print u'Fetching commands from SVN.'
         self._raw_data = urlopen(self._svn_url()).read().decode('latin1')
         self.convert_raw_data_to_dictionary()
         self.validate_commands_dict()
@@ -125,9 +125,8 @@ class Commands(object):
 
     def _svn_url(self):
         """ Return URL to command.properties in SVN for self.language. """
-        return 'https://geogebra.googlecode.com/svn/trunk/geogebra/' + \
-            'desktop/geogebra/properties/command%s.properties' \
-            % (self.language.commands_infix,)
+        return ('http://dev.geogebra.org/svn/branches/wiki/geogebra/properties/'
+                + 'command{0}.properties'.format(self.language.commands_infix))
 
 
     def print_status(self):

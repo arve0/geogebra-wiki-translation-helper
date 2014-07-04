@@ -11,7 +11,7 @@ Description: Generates a report on defferences between english and given wiki.
 
 import sys
 from sources import Pages
-from sources import Commands
+from sources import Commands, Articles
 from cache import Cache
 from language import Language
 import pywikibot
@@ -67,13 +67,16 @@ def update_cache(language, namespace):
     print u'='*len(msg)
 
     pages = Cache(Pages(namespace=namespace, language=language).get,
-                  'pages' + suffix, force=True)
+                  'pages' + suffix)#, force=True)
     commands = Cache(Commands(language, pages=pages.data).get,
                      'commands-' + language, force=True)
+    articles = Cache(Articles(language, pages=pages.data).get,
+                     'articles-' + language, force=True)
 
     # deletion invokes saving of cache
     del pages
     del commands
+    del articles
 
 
 def find_missing(language, namespace, console_output=False):
@@ -84,12 +87,13 @@ def find_missing(language, namespace, console_output=False):
 
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix)
-
     commands = Cache(Commands(language, pages=pages.data).get,
                      'commands-' + language)
+    articles = Cache(Articles(language, pages=pages.data).get,
+                     'articles-' + language)
 
     # Missing pages
-    msg = u'== Missing command pages ==\n'
+    msg = u'== Missing wiki pages ==\n'
     if console_output:
         print msg
 
@@ -98,6 +102,7 @@ def find_missing(language, namespace, console_output=False):
     msg += u'! Missing !! English page\n'
 
     row = 1
+    # commands
     cmd_string = u' ' + commands.data['Command']['translation']
     for (command_key, command) in commands.data.iteritems():
         if 'wikiid' not in command.keys():
@@ -107,6 +112,21 @@ def find_missing(language, namespace, console_output=False):
             title = command['translation'] + cmd_string
             link = namespace + u':' + title
             en_title = command_key + u' Command'
+            en_link = namespace + u':' + en_title
+            msg += u'|- <-- row {0} -->\n'.format(row)
+            row += 1
+            msg += (u'| [[{0}|{1}]] || [[:en:{2}|{3}]]\n'
+                    .format(link, title, en_link, en_title))
+
+    # articles
+    for (key, obj) in articles.data.iteritems():
+        if 'wikiid' not in obj.keys():
+            if console_output:
+                print (u'Wikipage missing for article {0}'
+                       .format(obj['translation']))
+            title = obj['translation']
+            link = namespace + u':' + title
+            en_title = key
             en_link = namespace + u':' + en_title
             msg += u'|- <-- row {0} -->\n'.format(row)
             row += 1
@@ -131,9 +151,12 @@ def find_updated(language, namespace, console_output=False):
     en_commands = Cache(Commands(pages=en_pages.data).get, 'commands-en')
     commands = Cache(Commands(language, pages=pages.data).get,
                      'commands-' + language)
+    en_articles = Cache(Articles(pages=pages.data).get, 'articles-en')
+    articles = Cache(Articles(language, pages=pages.data).get,
+                     'articles-' + language)
 
     # Updated pages
-    msg = u'== Updated command pages ==\n'
+    msg = u'== Updated pages ==\n'
     if console_output:
         print msg
 
@@ -141,44 +164,61 @@ def find_updated(language, namespace, console_output=False):
     msg += u'|- <!-- header -->\n'
     msg += u'! Page !! Last edit !! English page !! Last edit\n'
 
-    row = 1
-    for (command_name, command) in commands.data.iteritems():
-        if 'wikiid' not in command.keys():
-            # command does not exist in wiki
-            continue
-
-        page = [p for p in pages.data if p['id'] == command['wikiid']]
-        en_command = en_commands.data[command_name]
-        en_page = [p for p in en_pages.data if p['id'] == en_command['wikiid']]
-
-        # make sure we get only one match
-        assert len(page) == 1 and len(en_page) == 1
-        page = page[0]
-        en_page = en_page[0]
-
-        # short names
-        title = page['title']
-        link = page['fullTitle']
-        time = page['editTime']
-        en_title = en_page['title']
-        en_link = en_page['fullTitle']
-        en_time = en_page['editTime']
-        if time < en_time:
-            if console_output:
-                # \r\x1b[50C - 50 chars right from start of line
-                print u'{0} \r\x1b[50C{1}'.format(title, time)
-                print u'{0} \r\x1b[50C{1}'.format(en_title, en_time)
-                print u''
-            msg += u'|- <-- row {0} -->\n'.format(row)
-            row += 1
-            msg += u'| [[{0}|{1}]] || {2}'.format(link, title, time)
-            msg += (u'|| [[:en:{0}|{1}]] || {2}\n'
-                    .format(en_link, en_title, en_time))
+    # loop through properties (interwiki links could also be used)
+    for (key, obj) in commands.data.iteritems():
+        msg += _compare_time(key, obj, en_commands, pages, en_pages,
+                             console_output)
+    for (key, obj) in articles.data.iteritems():
+        msg += _compare_time(key, obj, en_articles, pages, en_pages,
+                             console_output)
 
     msg += u'|}\n'
 
     return msg
 
+
+def _compare_time(key, obj, en_properties, pages, en_pages, console_output):
+    """
+    Compares size of page obj['wikiid'] with english page.
+    Return wiki text table.
+    """
+    if 'wikiid' not in obj.keys():
+        # command does not exist in wiki
+        return u''
+
+    # find page and en_page
+    page = [p for p in pages.data if p['id'] == obj['wikiid']]
+    en_obj = en_properties.data[key]
+    if 'wikiid' not in en_obj.keys():
+        print 'ERROR: Missing english page: {0}\n'.format(en_obj['translation'])
+        return u''
+    en_page = [p for p in en_pages.data if p['id'] == en_obj['wikiid']]
+
+    # make sure we get only one match
+    assert len(page) == 1 and len(en_page) == 1
+    page = page[0]
+    en_page = en_page[0]
+
+    # short names
+    title = page['title']
+    link = page['fullTitle']
+    time = page['editTime']
+    en_title = en_page['title']
+    en_link = en_page['fullTitle']
+    en_time = en_page['editTime']
+    msg = u''
+    if time < en_time:
+        if console_output:
+            # \r\x1b[50C - 50 chars right from start of line
+            print u'{0} \r\x1b[50C{1}'.format(title, time)
+            print u'{0} \r\x1b[50C{1}'.format(en_title, en_time)
+            print u''
+        msg += u'|- <-- row -->\n'
+        msg += u'| [[{0}|{1}]] || {2}'.format(link, title, time)
+        msg += (u'|| [[:en:{0}|{1}]] || {2}\n'
+                .format(en_link, en_title, en_time))
+
+    return msg
 
 def find_size_difference(language, namespace, console_output=False):
     """Find pages with large size difference."""
@@ -189,10 +229,12 @@ def find_size_difference(language, namespace, console_output=False):
     en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix)
-
     en_commands = Cache(Commands(pages=en_pages.data).get, 'commands-en')
     commands = Cache(Commands(language, pages=pages.data).get,
                      'commands-' + language)
+    en_articles = Cache(Articles(pages=en_pages.data).get, 'articles-en')
+    articles = Cache(Articles(language, pages=pages.data).get,
+                     'articles-' + language)
 
     # Updated pages
     msg = u'== Size differences ==\n'
@@ -205,14 +247,50 @@ def find_size_difference(language, namespace, console_output=False):
     msg += u'! Page !! Largest !! English page !! Size difference\n'
 
     size_differences = []
-    for (command_name, command) in commands.data.iteritems():
-        if 'wikiid' not in command.keys():
-            # command does not exist in wiki
+    size_differences.extend(_compare_size(commands, en_commands,
+                                          pages, en_pages))
+    size_differences.extend(_compare_size(articles, en_articles,
+                                          pages, en_pages))
+
+    # sort after size, highest first
+    size_differences.sort(key=lambda obj: obj['difference'], reverse=True)
+    row = 1
+    for obj in size_differences:
+        if console_output:
+            # \r\x1b[50C - 70 chars right from start of line
+            print (u'{0} {1} {2}\r\x1b[70C{3} chars'
+                   .format(obj['title'], obj['largest'], obj['en_title'],
+                           obj['difference']))
+            print u''
+        msg += u'|- <-- row {0} -->\n'.format(row)
+        row += 1
+        msg += u'| [[{0}|{1}]]\n'.format(obj['link'], obj['title'])
+        msg += u'| {0}\n'.format(obj['largest'])
+        msg += u'| [[:en:{0}|{1}]]\n'.format(obj['en_link'], obj['en_title'])
+        msg += u'| {0}\n'.format(obj['difference'])
+
+    msg += u'|}\n'
+
+    return msg
+
+
+def _compare_size(objects, en_objects, pages, en_pages):
+    """
+    Compare size if text of objects pages to en_pages. Return a list of objects
+    with size difference > 300 chars (about 3 sentenses).
+    """
+    size_differences = []
+    for (key, obj) in objects.data.iteritems():
+        if 'wikiid' not in obj.keys():
+            # page does not exist in wiki
             continue
 
-        page = [p for p in pages.data if p['id'] == command['wikiid']]
-        en_command = en_commands.data[command_name]
-        en_page = [p for p in en_pages.data if p['id'] == en_command['wikiid']]
+        page = [p for p in pages.data if p['id'] == obj['wikiid']]
+        en_obj = en_objects.data[key]
+        if 'wikiid' not in en_obj.keys():
+            print 'ERROR: Missing english page: {0}\n'.format(en_obj['translation'])
+            continue
+        en_page = [p for p in en_pages.data if p['id'] == en_obj['wikiid']]
 
         # make sure we get only one match
         assert len(page) == 1 and len(en_page) == 1
@@ -239,27 +317,8 @@ def find_size_difference(language, namespace, console_output=False):
                 'en_link': en_link,
             })
 
-    # sort after size, highest first
-    size_differences.sort(key=lambda obj: obj['difference'], reverse=True)
-    row = 1
-    for obj in size_differences:
-        if console_output:
-            # \r\x1b[50C - 70 chars right from start of line
-            print (u'{0} {1} {2}\r\x1b[70C{3} chars'
-                   .format(obj['title'], obj['largest'], obj['en_title'],
-                           obj['difference']))
-            print u''
-        msg += u'|- <-- row {0} -->\n'.format(row)
-        row += 1
-        msg += u'| [[{0}|{1}]]\n'.format(obj['link'], obj['title'])
-        msg += u'| {0}\n'.format(obj['largest'])
-        msg += u'| [[:en:{0}|{1}]]\n'.format(obj['en_link'], obj['en_title'])
-        msg += u'| {0}\n'.format(obj['difference'])
-
-    msg += u'|}\n'
-
-    return msg
-
+    return size_differences
+    
 
 def wiki(language, namespace):
     """

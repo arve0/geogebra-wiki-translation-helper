@@ -46,15 +46,15 @@ class Language(object):
             raise NameError('Language code "' + code + '" not found. '\
                 'Please add it to language.py.')
 
-	# set commands_infix
+	# set properties_infix
         if self.code == 'nb':
-            self.commands_infix = '_no_NO'
+            self.properties_infix = '_no_NO'
         elif self.code == 'nn':
-            self.commands_infix = '_no_NO_NY'
+            self.properties_infix = '_no_NO_NY'
         elif self.code != 'en':
-            self.commands_infix = '_' + self.code
+            self.properties_infix = '_' + self.code
         else:
-            self.commands_infix = ''
+            self.properties_infix = ''
 
 
     def __str__(self):

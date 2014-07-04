@@ -4,4 +4,4 @@ Data sources used for the translation helper.
 """
 
 from .pages import Pages
-from .commands import Commands
+from .properties import Articles, Commands
