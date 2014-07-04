@@ -67,7 +67,7 @@ def update_cache(language, namespace):
     print u'='*len(msg)
 
     pages = Cache(Pages(namespace=namespace, language=language).get,
-                  'pages' + suffix)#, force=True)
+                  'pages' + suffix, force=True)
     commands = Cache(Commands(language, pages=pages.data).get,
                      'commands-' + language, force=True)
     articles = Cache(Articles(language, pages=pages.data).get,
