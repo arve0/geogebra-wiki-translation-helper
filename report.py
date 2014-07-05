@@ -107,8 +107,8 @@ def find_missing(language, namespace, console_output=False):
     for (command_key, command) in commands.data.iteritems():
         if 'wikiid' not in command.keys():
             if console_output:
-                print (u'Wikipage missing for command {0}'
-                       .format(command['translation']))
+                print (u'Wikipage missing for command {translation}'
+                       .format(**command))
             title = command['translation'] + cmd_string
             link = namespace + u':' + title
             en_title = command_key + u' Command'
@@ -122,8 +122,8 @@ def find_missing(language, namespace, console_output=False):
     for (key, obj) in articles.data.iteritems():
         if 'wikiid' not in obj.keys():
             if console_output:
-                print (u'Wikipage missing for article {0}'
-                       .format(obj['translation']))
+                print (u'Wikipage missing for article {translation}'
+                       .format(**obj))
             title = obj['translation']
             link = namespace + u':' + title
             en_title = key
@@ -190,7 +190,7 @@ def _compare_time(key, obj, en_properties, pages, en_pages, console_output):
     page = [p for p in pages.data if p['id'] == obj['wikiid']]
     en_obj = en_properties.data[key]
     if 'wikiid' not in en_obj.keys():
-        print 'ERROR: Missing english page: {0}\n'.format(en_obj['translation'])
+        print 'ERROR: Missing english page: {translation}\n'.format(**en_obj)
         return u''
     en_page = [p for p in en_pages.data if p['id'] == en_obj['wikiid']]
 
@@ -199,24 +199,17 @@ def _compare_time(key, obj, en_properties, pages, en_pages, console_output):
     page = page[0]
     en_page = en_page[0]
 
-    # short names
-    title = page['title']
-    link = page['fullTitle']
-    time = page['editTime']
-    en_title = en_page['title']
-    en_link = en_page['fullTitle']
-    en_time = en_page['editTime']
     msg = u''
-    if time < en_time:
+    if page['editTime'] < en_page['editTime']:
         if console_output:
             # \r\x1b[50C - 50 chars right from start of line
-            print u'{0} \r\x1b[50C{1}'.format(title, time)
-            print u'{0} \r\x1b[50C{1}'.format(en_title, en_time)
+            print u'{title} \r\x1b[50C{editTime}'.format(**page)
+            print u'{title} \r\x1b[50C{editTime}'.format(**en_page)
             print u''
         msg += u'|- <-- row -->\n'
-        msg += u'| [[{0}|{1}]] || {2}'.format(link, title, time)
-        msg += (u'|| [[:en:{0}|{1}]] || {2}\n'
-                .format(en_link, en_title, en_time))
+        msg += u'| [[{fullTitle}|{title}]] || {editTime}'.format(**page)
+        msg += (u'|| [[:en:{fullTitle}|{title}]] || {editTime}\n'
+                .format(**en_page))
 
     return msg
 
@@ -258,16 +251,15 @@ def find_size_difference(language, namespace, console_output=False):
     for obj in size_differences:
         if console_output:
             # \r\x1b[50C - 70 chars right from start of line
-            print (u'{0} {1} {2}\r\x1b[70C{3} chars'
-                   .format(obj['title'], obj['largest'], obj['en_title'],
-                           obj['difference']))
+            print (u'{title} {largest} {en_title}\r\x1b[70C{difference} chars'
+                   .format(**obj))
             print u''
         msg += u'|- <-- row {0} -->\n'.format(row)
         row += 1
-        msg += u'| [[{0}|{1}]]\n'.format(obj['link'], obj['title'])
-        msg += u'| {0}\n'.format(obj['largest'])
-        msg += u'| [[:en:{0}|{1}]]\n'.format(obj['en_link'], obj['en_title'])
-        msg += u'| {0}\n'.format(obj['difference'])
+        msg += u'| [[{link}|{title}]]\n'.format(**obj)
+        msg += u'| {largest}\n'.format(**obj)
+        msg += u'| [[:en:{en_link}|{en_title}]]\n'.format(**obj)
+        msg += u'| {difference}\n'.format(**obj)
 
     msg += u'|}\n'
 
@@ -288,7 +280,7 @@ def _compare_size(objects, en_objects, pages, en_pages):
         page = [p for p in pages.data if p['id'] == obj['wikiid']]
         en_obj = en_objects.data[key]
         if 'wikiid' not in en_obj.keys():
-            print 'ERROR: Missing english page: {0}\n'.format(en_obj['translation'])
+            print 'ERROR: Missing english page: {translation}\n'.format(**en_obj)
             continue
         en_page = [p for p in en_pages.data if p['id'] == en_obj['wikiid']]
 
