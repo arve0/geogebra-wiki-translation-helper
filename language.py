@@ -39,7 +39,7 @@ class Language(object):
     }
 
     def __init__(self, code):
-        self.code = code
+        self.code = code.lower()
         try:
             self.name = self._languages[code]
         except KeyError:
