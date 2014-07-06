@@ -12,6 +12,11 @@ from pywikibot import Site
 import sys
 from language import Language
 
+# utf8 hack
+# http://stackoverflow.com/questions/492483/setting-the-correct-encoding-when-piping-stdout-in-python
+import codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
 if __name__ == '__main__':
     """Print all namespaces in given language to console."""
     length = len(sys.argv)
