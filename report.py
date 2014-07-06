@@ -15,6 +15,7 @@ from sources import Commands, Articles
 from cache import Cache
 from language import Language
 import pywikibot
+from sources.properties import capitalize
 
 # utf8 hack
 # http://stackoverflow.com/questions/492483/setting-the-correct-encoding-when-piping-stdout-in-python
@@ -335,7 +336,7 @@ def main():
     length = len(sys.argv)
     if length == 4:
         language = sys.argv[2].lower()
-        namespace = sys.argv[3].capitalize()
+        namespace = capitalize(sys.argv[3])
     elif length == 3:
         language = sys.argv[2].lower()
         namespace = 'Manual'

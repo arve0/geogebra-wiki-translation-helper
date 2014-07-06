@@ -13,6 +13,7 @@ from pywikibot import pagegenerators
 import pywikibot
 from language import Language
 import re
+from properties import capitalize
 
 
 class Pages(object):
@@ -28,7 +29,7 @@ class Pages(object):
         """
         self.language = Language(language.lower())
         self._site = pywikibot.Site(code=language, fam='geogebra')
-        self.namespace = namespace.capitalize()
+        self.namespace = capitalize(namespace)
         # namespace_number requires _site
         self.namespace_number = self._get_namespace_number()
         self.pages = None
