@@ -20,6 +20,19 @@ cd pywikibot-core
 sudo python setup.py install
 ```
 
+## Example of workflow ##
+```
+./report.py cache en    # cache English pages
+./report.py cache nb    # cache Norwegian pages
+./save.py nb            # save Norwegian pages to folder 'pages'
+grep -l "{{translate" pages/*   # list pages which aren't translated
+mkdir translate         # make directory
+                        # move pages with pattern to translate directory
+grep -l --null "{{translate" pages/* | xargs -0 -J % mv % translate
+vim translate/*         # do work with your favorite editor
+                        # upload translated pages to wiki
+./upload.py comment="translated from english" translate/*
+```
 
 ## Usage ##
 
