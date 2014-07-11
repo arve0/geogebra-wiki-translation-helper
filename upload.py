@@ -37,54 +37,52 @@ def main():
 
     comment = None
 
-    regex_folders = r'[a-zA-Z]+\/'
-    regex_end = r'\.([a-z]+)\.([A-Za-z]+)\.wiki'
-    regex_comment = '^comment=(.+)'
+    folders = r'[a-zA-Z]+\/'
+    suffix = r'\.([a-z]+)\.([A-Za-z]+)\.wiki'
+    comment = '^comment=(.+)'
     for filename in sys.argv[1:]:
         title = filename
 
-        match = re.match(regex_comment, title)
-        if match != None:
+        match = re.match(comment, title)
+        if match:
             comment = match.groups()[0]
             continue
 
-        match = re.match(regex_folders, title)
-        if match != None:
-            #folder = filename[0:match.end()]
-            #print 'Removing folder {0} from {1}'.format(folder, filename)
+        match = re.match(folders, title)
+        if match:
+            # folder = filename[0:match.end()]
             title = title[match.end():]
 
-        match = re.search(regex_end, title)
-        if match == None:
-            print 'Filename {0} not in correct format'.format(filename)
-            print 'Should be title.lang.ns.wiki.'
+        match = re.search(suffix, title)
+        if not match:
+            print u'Filename {0} not in correct format'.format(filename)
+            print u'Should be title.lang.ns.wiki.'
             continue
 
         file_ = codecs.open(filename, encoding='utf8')
-        text = file_.read()
+        content = file_.read()
         file_.close()
 
         print 'CONTENT:'
-        print text
+        print content
 
         title = title[0:match.start()].replace('\\', '/').decode('utf8')
         language = match.groups()[0]
-
-        site = pywikibot.Site(code=language, fam='geogebra')
-
         namespace = match.groups()[1]
         if namespace == 'Main':
             namespace = ''
+
+        site = pywikibot.Site(code=language, fam='geogebra')
         en_site = pywikibot.Site('en', 'geogebra')
         namespace_number = en_site.ns_index(namespace)
 
         page = pywikibot.Page(source=site, title=title, ns=namespace_number)
 
-        if comment == None:
+        if not comment:
             comment = 'Uploaded from geogebra-wiki-translation-helper'
 
         print 'UPLOADING..'
-        page.text = text
+        page.text = content
         page.save(comment=comment)
 
 

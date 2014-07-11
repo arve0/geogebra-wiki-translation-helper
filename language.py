@@ -43,8 +43,8 @@ class Language(object):
         try:
             self.name = self._languages[code]
         except KeyError:
-            raise NameError('Language code "' + code + '" not found. '\
-                'Please add it to language.py.')
+            raise NameError('Language code "' + code + '" not found. ' +
+                            'Please add it to language.py.')
 
 	# set properties_infix
         if self.code == 'nb':

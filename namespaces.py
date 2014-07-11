@@ -18,12 +18,12 @@ import codecs
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 if __name__ == '__main__':
+    main()
+
+def main():
     """Print all namespaces in given language to console."""
     length = len(sys.argv)
-    if length > 2:
-        print_usage()
-        sys.exit()
-    elif length == 1:
+    if length == 1:
         language = Language('en')
     else:
         language = Language(sys.argv[1])

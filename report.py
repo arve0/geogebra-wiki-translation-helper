@@ -62,10 +62,8 @@ def update_cache(language, namespace):
     """Update cache of given language and namespace."""
     suffix = '-' + language + '-' + namespace
 
-    msg = u'Updating cache for {0}, namespace {1}'\
-            .format(Language(language), namespace)
-    print msg
-    print u'='*len(msg)
+    print (u'== Updating cache for {0}, namespace {1} =='
+           .format(Language(language), namespace))
 
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix, force=True)
@@ -84,7 +82,7 @@ def find_missing(language, namespace, console_output=False):
     """Find missing pages (not translated from english or not added to wiki)."""
     suffix = '-' + language + '-' + namespace
 
-    print u'Getting pages and commands from cache'
+    print u'== Getting pages and commands from cache =='
 
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix)
@@ -105,34 +103,39 @@ def find_missing(language, namespace, console_output=False):
     row = 1
     # commands
     cmd_string = u' ' + commands.data['Command']['translation']
-    for (command_key, command) in commands.data.iteritems():
-        if 'wikiid' not in command.keys():
-            if console_output:
-                print (u'Wikipage missing for command {translation}'
-                       .format(**command))
-            title = command['translation'] + cmd_string
-            link = namespace + u':' + title
-            en_title = command_key + u' Command'
-            en_link = namespace + u':' + en_title
-            msg += u'|- <-- row {0} -->\n'.format(row)
-            row += 1
-            msg += (u'| [[{0}|{1}]] || [[:en:{2}|{3}]]\n'
-                    .format(link, title, en_link, en_title))
+    missing_commands = {key:obj for key, obj in commands.data.iteritems()
+                        if 'wikiid' not in obj.iterkeys()
+                        and key != 'Command'}
+    for (command_key, command) in sorted(missing_commands.iteritems(),
+                                         key=lambda x: x[1]['translation']):
+        if console_output:
+            print (u'Wikipage missing for command {translation}'
+                   .format(**command))
+        title = command['translation'] + cmd_string
+        link = namespace + u':' + title
+        en_title = command_key + u' Command'
+        en_link = namespace + u':' + en_title
+        msg += u'|- <-- row {0} -->\n'.format(row)
+        row += 1
+        msg += (u'| [[{0}|{1}]] || [[:en:{2}|{3}]]\n'
+                .format(link, title, en_link, en_title))
 
     # articles
-    for (key, obj) in articles.data.iteritems():
-        if 'wikiid' not in obj.keys():
-            if console_output:
-                print (u'Wikipage missing for article {translation}'
-                       .format(**obj))
-            title = obj['translation']
-            link = namespace + u':' + title
-            en_title = key
-            en_link = namespace + u':' + en_title
-            msg += u'|- <-- row {0} -->\n'.format(row)
-            row += 1
-            msg += (u'| [[{0}|{1}]] || [[:en:{2}|{3}]]\n'
-                    .format(link, title, en_link, en_title))
+    missing_articles = {key:obj for key, obj in articles.data.iteritems()
+                        if 'wikiid' not in obj.iterkeys()}
+    for (key, obj) in sorted(missing_articles.iteritems(),
+                             key=lambda x: x[1]['translation']):
+        if console_output:
+            print (u'Wikipage missing for article {translation}'
+                   .format(**obj))
+        title = obj['translation']
+        link = namespace + u':' + title
+        en_title = key
+        en_link = namespace + u':' + en_title
+        msg += u'|- <-- row {0} -->\n'.format(row)
+        row += 1
+        msg += (u'| [[{0}|{1}]] || [[:en:{2}|{3}]]\n'
+                .format(link, title, en_link, en_title))
 
     msg += u'|}\n'
 
@@ -143,7 +146,7 @@ def find_updated(language, namespace, console_output=False):
     """Find command pages which is updated in English wiki."""
     suffix = '-' + language + '-' + namespace
 
-    print u'Getting pages and commands from cache'
+    print u'== Getting pages and commands from cache =='
 
     en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,
@@ -191,7 +194,7 @@ def _compare_time(key, obj, en_properties, pages, en_pages, console_output):
     page = [p for p in pages.data if p['id'] == obj['wikiid']]
     en_obj = en_properties.data[key]
     if 'wikiid' not in en_obj.keys():
-        print 'ERROR: Missing english page: {translation}\n'.format(**en_obj)
+        print u'ERROR: Missing english page: {translation}\n'.format(**en_obj)
         return u''
     en_page = [p for p in en_pages.data if p['id'] == en_obj['wikiid']]
 
@@ -218,7 +221,7 @@ def find_size_difference(language, namespace, console_output=False):
     """Find pages with large size difference."""
     suffix = '-' + language + '-' + namespace
 
-    print u'Getting pages and commands from cache'
+    print u'== Getting pages and commands from cache =='
 
     en_pages = Cache(Pages(namespace=namespace).get, 'pages-en-' + namespace)
     pages = Cache(Pages(namespace=namespace, language=language).get,

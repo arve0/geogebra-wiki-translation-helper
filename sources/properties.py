@@ -75,7 +75,7 @@ class Properties(object):
         english keyword as "translation".
         """
         for (key, obj) in self.dictionary.iteritems():
-            if 'translation' not in obj.keys():
+            if 'translation' not in obj:
                 self.dictionary[key].update({
                     'translation': key
                 })
@@ -91,8 +91,8 @@ class Properties(object):
                     obj['translation']: key
                 })
             else:
-                print u'ERROR: %s does not have a translation property.'\
-                        % (key,)
+                print (u'ERROR: {} does not have a translation property.'
+                       .format(key))
 
 
 

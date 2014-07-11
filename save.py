@@ -21,7 +21,9 @@ def print_usage():
     =====
     {0} language [namespace]
 
-    Saves page.text to files in folder pages. Filename is title.language-code.wiki
+    Save pages from cache to text files in existing folder 'pages'. Filename
+    will be title.language-code.namespace.wiki.
+    Ex: 'Tekst Kommando.nb.Manual.wiki'
 
     Default values
     ==============

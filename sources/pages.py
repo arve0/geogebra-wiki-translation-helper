@@ -45,8 +45,8 @@ class Pages(object):
             site=self._site, namespace=self.namespace_number, content=True)
 
         self.pages = []
-        print u'Getting pages from {0} wiki in namespace {1}.'\
-                .format(self.language, self.namespace)
+        print (u'Getting pages from {0} wiki in namespace {1}.'
+               .format(self.language, self.namespace))
         for page in pages:
             obj = {
                 'id': page._pageid,
@@ -79,8 +79,8 @@ class Pages(object):
         namespace_number = en_site.ns_index(namespace)
 
         if namespace_number == None:
-            raise NameError(u'Namespace {0} not found in english wiki.'\
-                    .format(self.namespace).encode('utf8'))
+            raise NameError(u'Namespace {0} not found in english wiki.'
+                            .format(self.namespace).encode('utf8'))
 
         return namespace_number
 
