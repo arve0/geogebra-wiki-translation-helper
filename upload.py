@@ -12,6 +12,7 @@ import sys
 import codecs
 import pywikibot
 import re
+import os
 
 def print_usage():
     """Print usage of this script."""
@@ -22,7 +23,7 @@ def print_usage():
 
     Upload page(s) to wiki, with text from file(s). Filename is used for page
     title. Filename should be in format Title.lang.ns.wiki.
-    Ex: 'Vector Command.en.Manual.wiki'
+    Ex: 'Vector Command.en.Main.wiki'
 
 '''.format(sys.argv[0])
     print usage
@@ -37,26 +38,20 @@ def main():
 
     comment = None
 
-    folders = r'[a-zA-Z]+\/'
     suffix = r'\.([a-z]+)\.([A-Za-z]+)\.wiki'
-    comment = '^comment=(.+)'
+    comment_match = '^comment=(.+)'
     for filename in sys.argv[1:]:
-        title = filename
-
-        match = re.match(comment, title)
+        match = re.match(comment_match, filename)
         if match:
             comment = match.groups()[0]
             continue
 
-        match = re.match(folders, title)
-        if match:
-            # folder = filename[0:match.end()]
-            title = title[match.end():]
+        title = os.path.split(filename)[1]
 
         match = re.search(suffix, title)
         if not match:
             print u'Filename {0} not in correct format'.format(filename)
-            print u'Should be title.lang.ns.wiki.'
+            print u'Should be title.lang.namespace.wiki.'
             continue
 
         file_ = codecs.open(filename, encoding='utf8')

@@ -51,7 +51,7 @@ def print_usage():
 
     Default values
     ==============
-    namespace: 'Manual' - Should be in english. Eg: Main, Manual.
+    namespace: 'Main' - Should be in english. Eg: Main, Manual.
                           List here http://wiki.geogebra.org/en/Special:Categories
 '''.format(sys.argv[0])
 
@@ -342,7 +342,7 @@ def main():
         namespace = capitalize(sys.argv[3])
     elif length == 3:
         language = sys.argv[2].lower()
-        namespace = 'Manual'
+        namespace = 'Main'
     else:
         print_usage()
         sys.exit()

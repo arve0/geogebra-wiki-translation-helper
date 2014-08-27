@@ -17,9 +17,6 @@ from language import Language
 import codecs
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
-if __name__ == '__main__':
-    main()
-
 def main():
     """Print all namespaces in given language to console."""
     length = len(sys.argv)
@@ -33,3 +30,6 @@ def main():
     for number, names in site.namespaces().iteritems():
         names_print = ', '.join(names)
         print u'Number: {0}\t Names: {1}'.format(number, names_print)
+
+if __name__ == '__main__':
+    main()
