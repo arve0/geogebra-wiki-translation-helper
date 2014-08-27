@@ -42,14 +42,14 @@ vim translate/*         # do work with your favorite editor
 ```
 Saves pages to text files in existing directory 'pages'. Filename format is 'Title.lang.ns.wiki'. File encoding is UTF-8. Namespace is optional.
 
-Default namespace is 'Manual' (applies for all commands). For empty namespace, use 'Main'.
+Default namespace is 'Main' (applies for all commands). For empty namespace, use 'Main'.
 #### Example ####
 ```
 ./save.py nb
 ```
 Output:
 ```
-Loading cache/pages-nb-Manual.json
+Loading cache/pages-nb-Main.json
 Saving pages to text files.
 ```
 
@@ -61,7 +61,7 @@ Saving pages to text files.
 Upload text files to wiki. Filename is used as title/pagename. Expexts filename format 'Title.lang.ns.wiki'. If several files is given, script will upload them in turn. Leading directory is stripped filenames. Comment is optional.
 #### Example ####
 ```
-./upload.py comment="fikset versjon" pages/Vektor\ Kommando.nb.Manual.wiki
+./upload.py comment="fikset versjon" pages/Vektor\ Kommando.nb.Main.wiki
 ```
 Output:
 ```
@@ -83,7 +83,7 @@ CONTENT:
 UPLOADING..
 Sleeping for 8.2 seconds, 2014-06-30 22:58:13
 WARNING: API warning (main): Unrecognized parameter: 'assert'
-Page [[Manual:Vektor Kommando]] saved
+Page [[Vektor Kommando]] saved
 ```
 
 
@@ -99,11 +99,11 @@ Page [[Manual:Vektor Kommando]] saved
 ```
 Output:
 ```
-Updating cache for Norsk bokmål(nb), namespace Manual
+Updating cache for Norsk bokmål(nb), namespace Main
 =====================================================
-Getting pages from Norsk bokmål(nb) wiki in namespace Manual.
+Getting pages from Norsk bokmål(nb) wiki in namespace Main.
 Fetching Norsk bokmål(nb) commands from SVN.
-Saving cache: cache/pages-nb-Manual.json
+Saving cache: cache/pages-nb-Main.json
 Saving cache: cache/commands-nb.json
 ```
 #### Generating report ####
@@ -114,11 +114,11 @@ This will generate a [wiki page](http://wiki.geogebra.org/nb/Translation_Report)
 Output:
 ```
 Getting pages and commands from cache
-Loading cache/pages-nb-Manual.json
+Loading cache/pages-nb-Main.json
 Loading cache/commands-nb.json
 Getting pages and commands from cache
-Loading cache/pages-en-Manual.json
-Loading cache/pages-nb-Manual.json
+Loading cache/pages-en-Main.json
+Loading cache/pages-nb-Main.json
 Loading cache/commands-en.json
 Loading cache/commands-nb.json
 Saving to http://wiki.geogebra.org/nb/Translation_Report
@@ -135,7 +135,7 @@ Page [[Translation Report]] saved
 ```
 Output:
 ```
-Missing command pages in Norsk bokmål(nb), namespace Manual
+Missing command pages in Norsk bokmål(nb), namespace Main
 ===========================================================
 Wikipage missing for command Polyeder
 Wikipage missing for command KøyrKlikkScript
@@ -154,7 +154,7 @@ Wikipage missing for command Topp
 ```
 Output:
 ```
-Updated command pages in Norsk bokmål(nb), namespace Manual
+Updated command pages in Norsk bokmål(nb), namespace Main
 ===========================================================
 Reg Kommando updated                              2012-12-30T14:50:41Z
 Fit Command updated                               2013-08-26T13:01:13Z
