@@ -23,11 +23,11 @@ def print_usage():
 
     Save pages from cache to text files in existing folder 'pages'. Filename
     will be title.language-code.namespace.wiki.
-    Ex: 'Tekst Kommando.nb.Manual.wiki'
+    Ex: 'Tekst Kommando.nb.Main.wiki'
 
     Default values
     ==============
-    namespace: 'Manual' - Should be in english. Eg: Main, Manual.
+    namespace: 'Main' - Should be in english. Eg: Main, Manual.
                           List here http://wiki.geogebra.org/en/Special:Categories
 '''.format(sys.argv[0])
     print usage
@@ -41,7 +41,7 @@ def main():
         namespace = sys.argv[2].capitalize()
     elif length == 2:
         language = sys.argv[1].lower()
-        namespace = 'Manual'
+        namespace = 'Main'
     else:
         print_usage()
         sys.exit()
