@@ -252,6 +252,4 @@ FordelingBinomial Kommando --> BinomialDist Command                   2667 chars
 ```
 
 ## Requirements ##
-Scripts are only tested on Mac OS X.
-
-Forward slashes in titles is converted to backward slashes, which means that saving to text files will not work for windows file systems.
+Scripts are only tested on Mac OS X, but should work on any OS. If you are unable to make it work, open an issue here on Github.
