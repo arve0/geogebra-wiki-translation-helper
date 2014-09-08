@@ -15,10 +15,63 @@ Uses cache to avoid server and bandwidth strain. **Remember** to update cache on
 ## Install ##
 ```
 git clone https://github.com/arve0/geogebra-wiki-translation-helper.git
+cd geogebra-wiki-translation-helper
 git submodule update --init
 cd pywikibot-core
 sudo python setup.py install
+sudo chown -R $(whoami) ~/.pywikibot
 ```
+In the piwikibot setup, use these options:
+k, n, y, 4, YOUR_LANGUAGE, YOUR_WIKI_USERNAME, s, n, n.
+
+Example:
+```
+Your default user directory is "/Users/arve/.pywikibot"
+How to proceed? ([K]eep [c]hange) K
+Do you want to copy user files from an existing pywikibot installation? n
+Create user-config.py file? Required for running bots ([y]es, [N]o) y
+1: anarchopedia
+2: battlestarwiki
+3: commons
+4: geogebra
+5: i18n
+6: incubator
+7: lockwiki
+8: lyricwiki
+9: mediawiki
+10: meta
+11: omegawiki
+12: osm
+13: outreach
+14: species
+15: strategy
+16: test
+17: vikidia
+18: wikia
+19: wikibooks
+20: wikidata
+21: wikimedia
+22: wikinews
+23: wikipedia
+24: wikiquote
+25: wikisource
+26: wikitech
+27: wikiversity
+28: wikivoyage
+29: wiktionary
+30: wowwiki
+Select family of sites we are working on, just enter the number not name (default: wikipedia): 4
+This is the list of known language(s):
+bs ca cs da de el en es et fa fr gl he hi hr hu is it kk ko lt mk nb nn pl pt ru sk sl sr sv tr zh
+The language code of the site we're working on (default: 'en'): nb
+Username (nb geogebra): arve
+Which variant of user_config.py:
+[S]mall or [E]xtended (with further information)? S
+Do you want to add any other projects? (y/N)n
+'/Users/arve/.pywikibot/user-config.py' written.
+Create user-fixes.py file? Optional and for advanced users ([y]es, [N]o) n
+```
+
 
 ## Example of workflow ##
 ```
@@ -91,8 +144,15 @@ Page [[Vektor Kommando]] saved
 ```
 ./report.py command language-code [namespace]
 ```
+Available commands:
+* cache
+* missing
+* size
+* updated
+* wiki
 
-#### Update cache ####
+#### cache command ####
+Will download wiki and save it to "cache" directory.
 
 ```
 ./report.py cache nb
@@ -106,7 +166,7 @@ Fetching Norsk bokmål(nb) commands from SVN.
 Saving cache: cache/pages-nb-Main.json
 Saving cache: cache/commands-nb.json
 ```
-#### Generating report ####
+#### wiki command ####
 This will generate a [wiki page](http://wiki.geogebra.org/nb/Translation_Report) with all reports.
 ```
 ./report.py wiki nb
@@ -129,7 +189,8 @@ Page [[Translation Report]] saved
 
 
 
-#### Find missing pages ####
+#### missing command ####
+This will find missing wiki pages (commands, tools and articles defined in GeoGebra source code).
 ```
 ./report.py missing nb
 ```
@@ -156,20 +217,20 @@ Output:
 ```
 Updated command pages in Norsk bokmål(nb), namespace Main
 ===========================================================
-Reg Kommando updated                              2012-12-30T14:50:41Z
-Fit Command updated                               2013-08-26T13:01:13Z
+Reg Kommando updated                              2012-12-30
+Fit Command updated                               2013-08-26
 
-Strekk Kommando updated                           2011-09-26T23:56:16Z
-Stretch Command updated                           2013-07-18T08:02:38Z
+Strekk Kommando updated                           2011-09-26
+Stretch Command updated                           2013-07-18
 
-GjennomsnittX Kommando updated                    2012-11-06T09:36:19Z
-MeanX Command updated                             2013-05-03T13:21:49Z
+GjennomsnittX Kommando updated                    2012-11-06
+MeanX Command updated                             2013-05-03
 
-GjennomsnittY Kommando updated                    2012-11-06T09:41:06Z
-MeanY Command updated                             2013-05-03T13:14:44Z
+GjennomsnittY Kommando updated                    2012-11-06
+MeanY Command updated                             2013-05-03
 
-Delingsforhold Kommando updated                   2012-10-05T09:55:59Z
-AffineRatio Command updated                       2013-06-14T10:00:22Z
+Delingsforhold Kommando updated                   2012-10-05
+AffineRatio Command updated                       2013-06-14
 ...
 ```
 
