@@ -242,8 +242,6 @@ Output:
 ```
 == Size differences ==
 
-== Size differences ==
-
 Title, english title, difference.
 
 Installasjonsguide (Installation Guide)                               +8056 chars
