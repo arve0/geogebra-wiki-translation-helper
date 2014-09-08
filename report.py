@@ -255,7 +255,8 @@ def find_size_difference(language, namespace, console_output=False):
     for obj in size_differences:
         if console_output:
             # \r\x1b[50C - 70 chars right from start of line
-            print (u'{title} {en_title}\r\x1b[70C{largest}{difference} chars'
+            print (u'{title} ({en_title})\r\x1b[70C{largest}{difference} chars'
+
                    .format(**obj))
             print u''
         msg += u'|- <-- row {0} -->\n'.format(row)

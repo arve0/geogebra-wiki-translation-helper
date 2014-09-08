@@ -242,13 +242,15 @@ Output:
 ```
 == Size differences ==
 
-Title, largest, english title, difference.
+== Size differences ==
 
-SpillLyd Kommando --> PlaySound Command                               4205 chars
+Title, english title, difference.
 
-LøsODE Kommando --> SolveODE Command                                  3848 chars
+Installasjonsguide (Installation Guide)                               +8056 chars
 
-FordelingBinomial Kommando --> BinomialDist Command                   2667 chars
+CAS-delen (CAS View)                                                  -5813 chars
+
+SpillLyd Kommando (PlaySound Command)                                 -4205 chars
 ```
 
 ## Requirements ##
