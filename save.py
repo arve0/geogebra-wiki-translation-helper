@@ -12,6 +12,7 @@ import sys
 import codecs
 from cache import Cache
 from sources import Pages
+import os
 
 
 def print_usage():
@@ -49,6 +50,10 @@ def main():
     suffix = '-' + language + '-' + namespace
     pages = Cache(Pages(namespace=namespace, language=language).get,
                   'pages' + suffix)
+
+    if not os.path.exists('pages'):
+        os.makedirs('pages')
+        print('Created directory "pages".')
 
     print 'Saving pages to text files.'
     for page in pages.data:

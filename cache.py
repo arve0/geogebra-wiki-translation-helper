@@ -11,6 +11,7 @@ Description: Class Cache: Reads cache/name.json upon initialization, if not
 
 import codecs
 import json
+import os
 
 class Cache(object):
     """
@@ -62,6 +63,9 @@ class Cache(object):
 
     def save(self):
         """ Save self.data to self._filename. """
+        if not os.path.exists('cache'):
+            os.makedirs('cache')
+            print('Created directory "cache".')
         print u'Saving cache: {0}'.format(self._filename)
         file_ = codecs.open(self._filename, 'w', encoding='utf8')
         # make json files easy to read, use indention + utf8 encoding
