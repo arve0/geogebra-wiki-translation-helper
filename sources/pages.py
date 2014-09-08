@@ -55,6 +55,7 @@ class Pages(object):
                 'text': page.text,
                 'revid': page._revid,
                 'editTime': page.editTime().toISOformat(),
+                'date': page.editTime().toISOformat()[0:10],
                 'namespace': page.namespace(),
                 'isRedirect': page._isredir,
             }

@@ -207,12 +207,12 @@ def _compare_time(key, obj, en_properties, pages, en_pages, console_output):
     if page['editTime'] < en_page['editTime']:
         if console_output:
             # \r\x1b[50C - 50 chars right from start of line
-            print u'{title} \r\x1b[50C{editTime}'.format(**page)
-            print u'{title} \r\x1b[50C{editTime}'.format(**en_page)
+            print u'{title} \r\x1b[50C{date}'.format(**page)
+            print u'{title} \r\x1b[50C{date}'.format(**en_page)
             print u''
         msg += u'|- <-- row -->\n'
-        msg += u'| [[{fullTitle}|{title}]] || {editTime}'.format(**page)
-        msg += (u'|| [[:en:{fullTitle}|{title}]] || {editTime}\n'
+        msg += u'| [[{fullTitle}|{title}]] || {date}'.format(**page)
+        msg += (u'|| [[:en:{fullTitle}|{title}]] || {date}\n'
                 .format(**en_page))
 
     return msg
@@ -237,11 +237,11 @@ def find_size_difference(language, namespace, console_output=False):
     msg = u'== Size differences ==\n'
     if console_output:
         print msg
-        print 'Title, largest, english title, difference.\n'
+        print 'Title, english title, difference.\n'
 
     msg += u'{| class="wikitable"\n'
     msg += u'|- <!-- header -->\n'
-    msg += u'! Page !! Largest !! English page !! Size difference\n'
+    msg += u'! Page !! English page !! Size difference\n'
 
     size_differences = []
     size_differences.extend(_compare_size(commands, en_commands,
@@ -255,15 +255,14 @@ def find_size_difference(language, namespace, console_output=False):
     for obj in size_differences:
         if console_output:
             # \r\x1b[50C - 70 chars right from start of line
-            print (u'{title} {largest} {en_title}\r\x1b[70C{difference} chars'
+            print (u'{title} {en_title}\r\x1b[70C{largest}{difference} chars'
                    .format(**obj))
             print u''
         msg += u'|- <-- row {0} -->\n'.format(row)
         row += 1
         msg += u'| [[{link}|{title}]]\n'.format(**obj)
-        msg += u'| {largest}\n'.format(**obj)
         msg += u'| [[:en:{en_link}|{en_title}]]\n'.format(**obj)
-        msg += u'| {difference}\n'.format(**obj)
+        msg += u'| {largest}{difference}\n'.format(**obj)
 
     msg += u'|}\n'
 
@@ -303,7 +302,7 @@ def _compare_size(objects, en_objects, pages, en_pages):
         difference = abs(size - en_size)
         if difference > 300:
             # ~ three sentences difference
-            largest = '<--' if size > en_size else '-->'
+            largest = '+' if size > en_size else '-'
             size_differences.append({
                 'difference': difference,
                 'largest': largest,
