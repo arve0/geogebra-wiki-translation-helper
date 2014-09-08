@@ -357,6 +357,8 @@ def main():
         find_size_difference(language, namespace, True)
     elif cmd == 'wiki':
         wiki(language, namespace)
+    else:
+        print_usage()
 
 
 if __name__ == '__main__':
