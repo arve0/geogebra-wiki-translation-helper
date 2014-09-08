@@ -241,8 +241,7 @@ AffineRatio Command updated                       2013-06-14
 Output:
 ```
 == Size differences ==
-
-Title, english title, difference.
+Title (English title)                                                 Size difference
 
 Installasjonsguide (Installation Guide)                               +8056 chars
 

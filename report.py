@@ -234,12 +234,12 @@ def find_size_difference(language, namespace, console_output=False):
                      'articles-' + language)
 
     # Updated pages
-    msg = u'== Size differences ==\n'
+    msg = u'== Size differences =='
     if console_output:
         print msg
-        print 'Title, english title, difference.\n'
+        print 'Title (English title)\r\x1b[70CSize difference\n'
 
-    msg += u'{| class="wikitable"\n'
+    msg += u'\n{| class="wikitable"\n'
     msg += u'|- <!-- header -->\n'
     msg += u'! Page !! English page !! Size difference\n'
 
